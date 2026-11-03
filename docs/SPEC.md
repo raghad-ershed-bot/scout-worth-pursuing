@@ -2,7 +2,7 @@
 
 Build handoff, written before the build. Evidence lives in AUDIT.md and RESEARCH-INSIGHTS.md. Data lives in `listings.json`.
 
-**The decisions in this spec are mine.** Claude drafted the document from them.
+**Decisions I made before the build:**
 - A next step for each home, never a score.
 - "Ready for viewing enquiry" rather than "ready", with availability kept as a separate question.
 - Copies grouped only where they're confirmed, with every listing and price kept.

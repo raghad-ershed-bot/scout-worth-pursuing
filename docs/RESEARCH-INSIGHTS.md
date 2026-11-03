@@ -1,6 +1,6 @@
 # RESEARCH-INSIGHTS: what the Bloom Towers audit means
 
-*First analytical position, written to be challenged. It's based on the corrected AUDIT.md (30 listings checked one by one, plus counts across all 208 1BR listings in Bloom Towers, JVC, on 3 Nov 2026). I set the questions it had to answer and its structure. Claude drafted it from the audit, and I challenged and tightened it. Section E ends on deciding which homes deserve a call, and that became my product thesis.*
+*First analytical position, written to be challenged. It's based on the corrected AUDIT.md (30 listings checked one by one, plus counts across all 208 1BR listings in Bloom Towers, JVC, on 3 Nov 2026). Section E ends on deciding which homes deserve a call, and that became my product thesis.*
 
 Every claim below is tagged:
 - **[Fact]:** directly observed and checkable

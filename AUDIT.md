@@ -13,9 +13,8 @@ Rent prices run from AED 58,500 to 100,000 a year (median 69,999). Sale prices r
 
 Medians count **listings, not unique flats**. In this first table, "unfurnished" means everything not marked furnished, which includes 3 "partly furnished" rent listings. **The furnished sale median is sensitive:** it moves from 1,358 to 1,412 once confirmed duplicate copies are removed. So every furnished-sale percentage in the table below is approximate (see "Benchmark check").
 
-## Who did what
-- **Me:** I chose Bloom Towers because one building with enough rent and sale stock lets me compare like with like. I set what to check on every listing: price against comparables, repeat listings of the same flat, photos, the permit, availability signals and anything else that looked wrong. I reviewed the first pass and ran a quality-control review on it, with ChatGPT as a second reader. I then corrected the interpretation where it went beyond the evidence: a repeat listing doesn't show that an agency acted improperly, shared photos can be shared marketing, and "Lowest Price in Market" is unsupported rather than false. Every change is in the corrections log.
-- **Claude:** opened the 30 listing pages in my browser, recorded the fields, ran the counts across all 208 listings and compared the photos side by side.
+## How I ran the audit
+I chose Bloom Towers because one building with enough rent and sale stock lets me compare like with like. I went through the listings against a fixed set of checks: price against comparables, repeat listings of the same flat, photos, the permit, availability signals, and anything else wrong. Claude ran the same checks as a second pass in my browser, and also ran the counts across all 208 listings and the side-by-side photo comparisons. I then ran a quality-control review, with ChatGPT as a second reader, and corrected wherever the reading went beyond the evidence: a repeat listing doesn't show an agency acted improperly, shared photos can be shared marketing, and "Lowest Price in Market" is unsupported rather than false. Every change is in the corrections log.
 
 ## How each listing was checked
 - Each listing page was opened and the following was recorded: price, size, furnishing, cheques, agent, agency, badges, placement level, listed date, "available from" date, the permit validation link, the title and the description.

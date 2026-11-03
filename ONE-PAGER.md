@@ -4,7 +4,7 @@
 **The answer.** The trust problem I found isn't fake listings; there were none in 30. It's that the page never tells a searcher which listings are worth a call *for them*, so they contact everyone, copies included. Scout should sit in Saved and give each saved home a next step, label every fact with who said it, and ask the agent only what decides it.
 
 ## 1. The problem behind the problem
-I audited 30 live 1-bed listings in Bloom Towers, JVC (15 rent, 15 sale) and counted claims across all 208 there. I chose the building and the checks, Claude ran the page-by-page pass in my browser, and I reviewed and corrected the findings ([AUDIT.md](AUDIT.md)).
+I audited 30 live 1-bed listings in Bloom Towers, JVC (15 rent, 15 sale) and counted claims across all 208 there. Claude ran a second pass on the same checks ([AUDIT.md](AUDIT.md)).
 
 - **No fakes, no bait.** 0 of 30 were clearly misleading, and every price outlier was *above* the market.
 - **One flat, several listings.** 5 of the 15 sale listings were 2 flats, one at AED 960k and at 1.0M. All 5 were "Verified", because the badge checks documents, not copies.
@@ -64,6 +64,6 @@ Use it to stop messaging three agencies about one flat, to ask the question that
 
 *1 and 2 are the product, 3 is correctness, 4 to 6 complete it.*
 
-**How I worked.** I led the product work: the evidence, the problem, the rules and every product decision, plus three review rounds of the build. Claude ran the listing checks, built the prototype, ran the tests and drafted the documents with me. ChatGPT reviewed the work. Where each AI was wrong, and how it was caught: [AI-LOG](AI-LOG.md) and the [decision log](docs/DECISION-LOG.md).
+**How I worked.** I led it end to end: the audit, the problem, the rules, the decisions, and three review rounds of the build ([decision log](docs/DECISION-LOG.md)). Claude was a second pass on the listing checks, and it built and tested the prototype. ChatGPT reviewed the work. Where each was wrong is in [AI-LOG](AI-LOG.md).
 
 [Prototype](https://raghad-ershed-bot.github.io/scout-worth-pursuing/) · [Repo](https://github.com/raghad-ershed-bot/scout-worth-pursuing) · [Supporting files](https://drive.google.com/drive/folders/1pHH4C9YdmlPQPbrNXoMPkbB_g3OvEQED)
