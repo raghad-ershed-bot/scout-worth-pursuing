@@ -1,6 +1,6 @@
 # Testing Scout as a searcher (2–3 Nov 2026)
 
-Before designing anything, I used Scout, PF's AI search (beta), as a real searcher. There are two screen recordings in this folder, plus a later comparison test. This is what I saw. It's my observation, not a measurement.
+Before designing anything, I used Scout, PF's AI search (beta), as a real searcher across two long sessions, then ran a later comparison test. This is what I saw. It's my observation, not a measurement.
 
 ## What works
 - It keeps context across a long conversation (80+ messages).
