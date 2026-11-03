@@ -18,6 +18,7 @@ Build handoff, written before the build. Evidence lives in AUDIT.md and RESEARCH
 - "Keep anyway" became "Proceed despite conflict", and the conflict stays visible
 - a month-only tenancy answer stays unresolved near your move-in date
 - an explicit "unavailable" outcome isn't built
+- one-tap approval now lets Scout ask every agent at once (simulated); you can still send each one yourself
 
 Every capability below is tagged with one of four statuses:
 - **[Real]:** real data (Bloom Towers listings checked on 3 Nov 2026)
