@@ -1,7 +1,7 @@
 # Rules: what Scout decides, and where each rule goes wrong
 
 ## The stance: Scout never calls a listing "fake"
-The brief asks what makes the assistant call a listing likely fake. My answer is that **it shouldn't**, at least not from what's on the page. In the audit (30 listings, Bloom Towers, JVC), 0 met a reasonable bar for "misleading" on their own. Most of the first-pass suspicions turned out to have ordinary explanations once I checked: holiday-home permits, shared marketing photos, keyword tag lists. A "likely fake" label would mostly have hit honest agents.
+The brief asks what makes the assistant call a listing likely fake. My answer is that **it shouldn't**, at least not from what's on the page. In the audit (30 listings, Bloom Towers, JVC), 0 met a reasonable bar for "misleading" on their own. Most of the first-pass suspicions turned out to have ordinary explanations once checked: holiday-home permits, shared marketing photos, keyword tag lists. A "likely fake" label would mostly have hit honest agents.
 
 Instead, Scout **flags specific, sourced evidence** and lets the searcher decide:
 

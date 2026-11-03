@@ -1,6 +1,23 @@
 # SPEC: Scout "Worth pursuing?" prototype
 
-Build handoff. Evidence lives in AUDIT.md and RESEARCH-INSIGHTS.md. Data lives in `listings.json`.
+Build handoff, written before the build. Evidence lives in AUDIT.md and RESEARCH-INSIGHTS.md. Data lives in `listings.json`.
+
+**The decisions in this spec are mine.** Claude drafted the document from them.
+- A next step for each home, never a score.
+- "Ready for viewing enquiry" rather than "ready", with availability kept as a separate question.
+- Copies grouped only where they're confirmed, with every listing and price kept.
+- Conflict, Potential conflict and Unknown kept as separate outcomes.
+- Holiday-home lets and off-plan as separate rules. The Bloom Towers evidence and the Scout test kept apart.
+- Constraints asked one at a time, only when a saved home makes them matter.
+- Agent contact as an escalation: "Send it myself" is the default, and the Scout route is shown as simulated.
+- "Worth pursuing?" in Saved as the main experience.
+- One agency's "vacant" isn't carried across the other listings of the same flat.
+
+**What changed after this was written** (each change is recorded in DECISION-LOG):
+- the before/after message summary was removed
+- "Keep anyway" became "Proceed despite conflict", and the conflict stays visible
+- a month-only tenancy answer stays unresolved near your move-in date
+- an explicit "unavailable" outcome isn't built
 
 Every capability below is tagged with one of four statuses:
 - **[Real]:** real data (Bloom Towers listings checked on 3 Nov 2026)
@@ -22,7 +39,7 @@ Scout's output is a **next step with a reason**, never a score:
 | **Ask first** | A potential conflict or an unknown that could change the decision | The exact question(s) |
 | **Set aside** | A conflict with a constraint the user said is firm | The reason. Reversible with one tap ("Keep anyway") |
 
-**This is the essential requirement.** The prototype must show the user's next action changing. Any before/after counts in the prototype are an **illustrative, scripted scenario**, not measured behaviour or a proven outcome:
+**The test for the prototype:** it must show the user's next action changing. Any before/after counts in the prototype are an **illustrative, scripted scenario**, not measured behaviour or a proven outcome:
 - **Before Scout:** the user would contact every saved listing with a generic "Is this available?"
 - **After Scout:** they contact fewer agents, with sharper questions, and set aside listings for stated reasons.
 - **After a (simulated) agent answer:** the next step updates, and a change log says why.

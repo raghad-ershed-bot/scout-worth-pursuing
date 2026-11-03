@@ -6,6 +6,12 @@ A mobile-first, clickable prototype for Property Finder's Scout. For the homes a
 
 - **Live prototype:** [https://raghad-ershed-bot.github.io/scout-worth-pursuing/](https://raghad-ershed-bot.github.io/scout-worth-pursuing/) (open it on a phone, or narrow your browser to about 400px)
 - **Start with:** [ONE-PAGER.md](ONE-PAGER.md)
+- **Supporting files (research, Scout test, decision log):** [Google Drive](https://drive.google.com/drive/folders/1pHH4C9YdmlPQPbrNXoMPkbB_g3OvEQED)
+
+## How this was made
+- **Me (product):** I chose the building and the audit checks, then reviewed and corrected the findings. I tested Scout myself, defined the problem, and set the direction, the rules and the design decisions. I ran three review rounds on the build and decided what to fix and what to leave.
+- **Claude:** ran the page-by-page listing checks in my browser, analysed the data, built the prototype, ran the tests, and drafted the documents with me.
+- **ChatGPT:** reviewed the evidence, the code and the documents independently. Three of its eight code findings didn't reproduce when the build was run ([docs/DECISION-LOG.md](docs/DECISION-LOG.md)).
 
 ## What's here
 | File | What it is |
@@ -16,7 +22,9 @@ A mobile-first, clickable prototype for Property Finder's Scout. For the homes a
 | [AI-LOG.md](AI-LOG.md) | Times AI tools were confidently wrong about UAE real estate, and how I caught them |
 | [docs/DECISION-LOG.md](docs/DECISION-LOG.md) | Review rounds: every finding, how it was tested, what changed |
 | [docs/HANDOFF.md](docs/HANDOFF.md) | Exactly what's implemented, test coverage, known limitations |
-| [docs/SPEC.md](docs/SPEC.md) | The build spec |
+| [docs/RESEARCH-INSIGHTS.md](docs/RESEARCH-INSIGHTS.md) | My first analytical position: what the evidence changed, the strongest argument against me |
+| [docs/SCOUT-TEST.md](docs/SCOUT-TEST.md) | What I saw testing Scout as a searcher |
+| [docs/SPEC.md](docs/SPEC.md) | The build spec, with the decisions I made before building |
 | `index.html` | The prototype (built, single file) |
 | `src/template.html`, `data/listings.json`, `build.py` | Source, data, build |
 | `tests/` | Headless journey and rule tests |

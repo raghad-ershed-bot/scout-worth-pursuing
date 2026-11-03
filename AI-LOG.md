@@ -25,22 +25,22 @@ I used three AI tools today: PF's own Scout (as the product under test), Claude 
 **4. Holiday homes flagged as "missing permits".**
 - **What it said:** #4 and #7 showed no Trakheesi permit link, so it flagged them as missing permits, and marked #7 "Misleading (likely stale)".
 - **Why it's wrong:** both carry **DTCM holiday-home permits**. They're a different product (bills included, plus a booking fee, VAT, tourism tax and deposit), not unpermitted listings.
-- **How I caught it:** the audit quality-control pass reopened both pages and read the regulatory fields and full descriptions. Holiday-home lets became a product rule (R4).
+- **How it was caught:** my quality-control review questioned #7. Reopening both pages showed the DTCM permits and the full descriptions. I made holiday-home lets a product rule (R4).
 
 **5. "37% of listings mention the Marina", read as view claims.**
 - **What it said:** a building-wide count implied over a third of JVC listings claim Marina views.
 - **Why it's wrong:** JVC isn't on the Marina. Most of those were *location* mentions ("near Dubai Marina"). Only 20 of 208 actually claim a view.
-- **How I caught it:** I recounted, separating view claims from location mentions.
+- **How it was caught:** in the quality-control pass, the count was redone, separating view claims from location mentions.
 
 **6. A listing's age was out by a year.**
 - **What it said:** #7 was "listed 5 Dec 2024 (11 months)".
 - **Why it's wrong:** that's about 23 months. The page itself hides it behind "Listed more than 6 months ago".
-- **How I caught it:** a second AI review (ChatGPT) flagged the arithmetic, and I re-checked it against the page's own listed date.
+- **How it was caught:** my quality-control review (ChatGPT as a second reader) flagged the arithmetic, and it was re-checked against the page's own listed date.
 
 **7. "Until August 2027" became "31 August 2027".**
 - **What happened:** when fixing the tenancy logic, Claude turned an agent's month-only answer into an exact end date, and then treated "tenancy ends" as "you can move in".
 - **Why it's wrong:** a month isn't a date, and the end of a tenancy isn't handover.
-- **How I caught it:** two separate review rounds caught it, one step at a time. The rule now keeps the answer exactly as precise as it was given, and asks for the exact end date and handover date.
+- **How it was caught:** my review rounds caught it, one step at a time. I set the rule: keep the answer exactly as precise as it was given, and ask for the exact end date and handover date.
 
 ## ChatGPT (reviewing my code)
 **8. Three confident bug reports that weren't real.** These aren't about real estate, but they matter for how I used AI.

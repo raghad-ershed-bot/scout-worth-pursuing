@@ -13,12 +13,16 @@ Rent prices run from AED 58,500 to 100,000 a year (median 69,999). Sale prices r
 
 Medians count **listings, not unique flats**. In this first table, "unfurnished" means everything not marked furnished, which includes 3 "partly furnished" rent listings. **The furnished sale median is sensitive:** it moves from 1,358 to 1,412 once confirmed duplicate copies are removed. So every furnished-sale percentage in the table below is approximate (see "Benchmark check").
 
+## Who did what
+- **Me:** I chose Bloom Towers because one building with enough rent and sale stock lets me compare like with like. I set what to check on every listing: price against comparables, repeat listings of the same flat, photos, the permit, availability signals and anything else that looked wrong. I reviewed the first pass and ran a quality-control review on it, with ChatGPT as a second reader. I then corrected the interpretation where it went beyond the evidence: a repeat listing doesn't show that an agency acted improperly, shared photos can be shared marketing, and "Lowest Price in Market" is unsupported rather than false. Every change is in the corrections log.
+- **Claude:** opened the 30 listing pages in my browser, recorded the fields, ran the counts across all 208 listings and compared the photos side by side.
+
 ## How each listing was checked
-- I opened each listing page and recorded what the page shows: price, size, furnishing, cheques, agent, agency, badges, placement level, listed date, "available from" date, the permit validation link, the title and the description.
-- I viewed the first 3 photos of each listing and compared them side by side wherever two listings could be the same flat.
+- Each listing page was opened and the following was recorded: price, size, furnishing, cheques, agent, agency, badges, placement level, listed date, "available from" date, the permit validation link, the title and the description.
+- The first 3 photos of each listing were compared side by side wherever two listings could be the same flat.
 - **Duplicates** are only marked "confirmed" when the photos match. A matching size alone does not count: the same layout repeats on every floor.
-- **Permits:** I checked whether the page shows a Trakheesi (Dubai Land Department) validation link. I did **not** open those links or validate the permits themselves.
-- **Availability:** I can only report signals from the page (dates, "vacant" or "tenanted" in the text). Whether a flat is actually still available is **unknown** for every listing; that would need the agent's answer.
+- **Permits:** the audit checked whether the page shows a Trakheesi (Dubai Land Department) validation link. It did **not** open those links or validate the permits themselves.
+- **Availability:** the audit can only report signals from the page (dates, "vacant" or "tenanted" in the text). Whether a flat is actually still available is **unknown** for every listing; that would need the agent's answer.
 
 ## Verdict key
 - **Trust:** no problems found in what a searcher can see.
@@ -88,7 +92,7 @@ Each finding is labelled with its evidence base:
 - **[Building]:** counts over every 1BR listing live in Bloom Towers on 3 Nov 2026 (170 rent, 38 sale). These are counts of what listings say. They don't check whether it's true.
 
 1. **[Sample] The same flat appears several times, sometimes at different prices. Confirmed by matching photos.** One flat is listed by 3 agencies (#21, #25, #26: AED 949,999 / 950,000 / 950,000). Another is listed by 2 agencies, **AED 40,000 apart** (#19 at 960,000, #29 at 1,000,000). So 5 of the 15 sale listings checked are 2 flats. All 5 carry "Verified". That's consistent with how the badge works (per-listing documents, not one record per flat), so this is not proof of anything fake. The searcher's problem is noise and conflicting prices.
-2. **[Sample] Look-alike listings are usually different flats.** I compared photos for every look-alike group: same size and tower, or same agent and price. Only 2 groups were the same flat. These were different flats with the same layout: #5/#6, #8/#9/#10, the four 673 sqft flats in Tower B, and 166525470 vs #19/#29. Matching on size, tower or price alone would wrongly flag honest agents.
+2. **[Sample] Look-alike listings are usually different flats.** Photos were compared for every look-alike group: same size and tower, or same agent and price. Only 2 groups were the same flat. These were different flats with the same layout: #5/#6, #8/#9/#10, the four 673 sqft flats in Tower B, and 166525470 vs #19/#29. Matching on size, tower or price alone would wrongly flag honest agents.
 3. **[Sample] Photos can't always be relied on to show the advertised flat.** #22 and #23 (same agency) use one identical photo set for two listings that state different sizes (722 and 697 sqft) and describe themselves as specific units. Neither says the photos are representative. This is a strong integrity concern. It is **not proven** misrepresentation: the photos could be a shared marketing shoot, and I can't tell which listing, if either, is inaccurate. The same pattern shows up on the rent side (finding 11).
 4. **[Sample] Holiday-home listings sit among yearly leases with prices that aren't comparable.** #4 and #7 are holiday-home lets: DTCM permits, "annual rental price includes utility bills", plus a booking fee, VAT, tourism tax and deposit on top. Both are paid "Featured" placements. #7 has been live about 23 months, but the page only says "Listed more than 6 months ago".
 5. **[Sample] Price outliers in this building are above the market, not below it.** The unusual prices were rent at +20% (#1), +21% (#4, explained by bills) and +25% (#11), and sale at +10% (#24) and +12% (#27). None of the cheapest listings in the sample was below the building's normal range. These are **pricing anomalies, not evidence of deception**. The "too cheap to be true" bait in the brief **did not show up** in this building's 1BR sample. That doesn't mean it doesn't happen elsewhere.
@@ -103,7 +107,7 @@ Each finding is labelled with its evidence base:
 A **repeat** here means two or more listings with the same tower, size, price and furnishing.
 - **Building-wide (165 standard rent listings):** 24 such combinations, covering **53 listings**. That's 29 listings beyond the first in each combination.
 - **Who is listing them:** 3 combinations come from a single agency each; the other 21 involve two or more agencies.
-- **Photo check:** I compared the first 2 photos of every listing in all 24 combinations.
+- **Photo check:** the first 2 photos of every listing in all 24 combinations were compared.
 
 | Result | Combinations | Notes |
 |---|---|---|
@@ -123,7 +127,7 @@ A **repeat** here means two or more listings with the same tower, size, price an
 ## Corrections log (what changed after the quality-control pass, and why)
 | # | First version | Corrected | How it was caught |
 |---|---|---|---|
-| 7 | "Listed 5 Dec 2024 (11 months)" | About 23 months. The page itself shows only "more than 6 months ago" | Arithmetic error in my first pass, flagged in review and re-checked against the page |
+| 7 | "Listed 5 Dec 2024 (11 months)" | About 23 months. The page itself shows only "more than 6 months ago" | Arithmetic error in the first pass (Claude's), caught in my quality-control review and re-checked against the page |
 | 4, 7 | "No permit link shown"; #7 marked "Misleading (likely stale)" | Both carry holiday-home (DTCM) permits instead of Trakheesi links. Prices include bills and exclude extra fees. Both are now "Check" | Reopened both pages and read the regulatory fields and full descriptions |
 | 16 | "Misleading claim in title: false" | "Unsupported claim": the scope of "market" isn't stated, so it can't be called false. It isn't the lowest in this building (8 cheaper) | Review challenged the scope; re-counted all 38 sale listings |
 | 22, 23 | "Misleading: recycled photos" | "Check: photos not unit-specific (undisclosed)". At least one of the two shows a different flat; which one is unknown | Re-read both descriptions for a representative-photo disclosure (there is none) |
@@ -133,7 +137,7 @@ A **repeat** here means two or more listings with the same tower, size, price an
 | Finding 4 (old) | "37% mention Marina" (implied view claims) | 20 of 208 claim a Marina view; 40 mention it only as nearby | Re-counted, separating view claims from location mentions |
 | Finding 4 (old) | "Text says both high and middle floor" (#22) | Those words come from a keyword tag list, not a claim about the unit | Re-read the full description |
 | 2 | "No individual agent named" (implying a gap) | PF labels the listing "Direct From Developer", and the agent field carries the company name | Caught while building the prototype's data file from the page fields |
-| 4 | Briefly read its "available from" date (15 Nov) as a "last refreshed" date in the future | It's the rental availability date; I never published the error | Caught while re-checking which field each date came from |
+| 4 | Briefly read its "available from" date (15 Nov) as a "last refreshed" date in the future | It's the rental availability date; the error was never published | Caught while re-checking which field each date came from |
 
 ## Unresolved questions
 - Is any flat actually still available? Only the agent can answer this.
@@ -155,7 +159,7 @@ The medians count **listings, not unique flats**. A flat listed three times coun
 | Sale, unfurnished | 1,352 (n=19) | n/a | 1,343 (n=18) | 1,352 (n=19) |
 | Sale, furnished | 1,358 (n=19) | n/a | 1,412 (n=16) | **1,412 (n=16)** |
 
-¹ 152362217 (#4), 8607476 (#7), 126559502, 119734787 (holiday-home or monthly lets), and 166534211 (a bills-included lease on 12 cheques). Two other listings matched my keyword search only because the agency's footer lists "Holiday Homes" as a service; I checked those by hand and kept them in the benchmark.
+¹ 152362217 (#4), 8607476 (#7), 126559502, 119734787 (holiday-home or monthly lets), and 166534211 (a bills-included lease on 12 cheques). Two other listings matched the keyword search only because the agency's footer lists "Holiday Homes" as a service; they were checked by hand and kept in the benchmark.
 ² Exact repeats might be the same flat or different flats at the same price. This is a sensitivity check, not a duplicate count.
 
 **Why each sample size changes:**

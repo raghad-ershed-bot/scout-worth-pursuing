@@ -86,4 +86,4 @@ Agent replies update the assessment only for the information and the agency they
 - The submission docs (README, ONE-PAGER, RULES, AI-LOG) are in the repo root.
 
 ## 6. Not in this package
-Old test scripts that target selectors that no longer exist, an outdated intermediate copy of the view code, screenshots from earlier builds, the research notes and the personal working guide. The project has no secrets, credentials or environment files.
+Old test scripts that target selectors that no longer exist, an outdated intermediate copy of the view code, screenshots from earlier builds, and my personal working notes. The project has no secrets, credentials or environment files.

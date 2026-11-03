@@ -121,9 +121,9 @@
 
 ## 3 Nov 2026, 18:43–18:55 GST · Presentation pass (logic unchanged)
 
-**Why.** Looking at the screens as a whole, the logic held up but the prototype undersold the idea. Its headline number, "6 generic messages without Scout vs 5 with Scout", advertised saving one message, and it rested on an assumed baseline. Disclaimers were repeated on every card, so the screens read like small print. Each card led with an explanation before the questions, and the journey card used audit numbers (#21, #25…) that a first-time visitor can't read.
+**Why.** I wasn't convinced the prototype showed the idea, so I asked Claude for a blunt review of the screens against my standards. The logic held up, but the presentation undersold it. Its headline number, "6 generic messages without Scout vs 5 with Scout", advertised saving one message, and it rested on an assumed baseline. Disclaimers were repeated on every card, so the screens read like small print. Each card led with an explanation before the questions, and the journey card used audit numbers (#21, #25…) that a first-time visitor can't read.
 
-**What changed.** Wording and layout only. No rule, data or outcome changed.
+**What changed.** I approved wording and layout changes only. No rule, data or outcome changed.
 - **Shortlist summary:** the message comparison is replaced by listings saved → homes (copies grouped) → ready to enquire. Every number comes straight from the rules.
 - **Cards:** the questions come first. The generic "One or two answers could change your decision" line is dropped from Ask first cards, while the reasons stay on Ready, Set aside and Proceed. Clusters are labelled "Listed 3 times" instead of "Cluster A".
 - **Disclaimers:** one prototype banner, plus "Simulated" on every reply. The per-cluster "not automatic detection" note is removed; the Grouped section still says it.
