@@ -51,4 +51,6 @@ I reviewed the prototype end to end the way a PF leadership room would, and benc
 - **No "aha".** The top of "Worth pursuing?" is now a Scout brief: what each agent said, and what changed.
 - **"It doesn't look like it's inside search."** Search cards open Scout's check in-app. Before you save, it says it hasn't checked the home against your needs yet.
 
+Two final touches: replies now read back as short structured fields (for example "Vacant: yes · per agency of #21", or "Tenanted until: August 2027 · month only"), and a "See what an agent receives" preview sits under the approve button. Search cards now show original building illustrations instead of empty photo boxes, labelled as illustrations; real listing photos stay on PF and are never copied.
+
 No rule, data or outcome changed. Every test suite was re-run, including a new `tests/presentation-v2.js`.

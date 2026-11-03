@@ -34,4 +34,4 @@ Open `index.html` in a browser; there's nothing to install. To rebuild, run `pyt
 
 **To make it real** (in order): PF's enquiry channel and agent consent; the listing feed plus an accuracy test for AI extraction; an "unavailable" outcome; PF's original images for copy detection; PF accounts and notifications. Details are in [ONE-PAGER.md](ONE-PAGER.md), section 8.
 
-No listing photos are copied, and no secrets or credentials are used.
+Search cards use original building illustrations; no listing photos are copied. No secrets or credentials are used.

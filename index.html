@@ -122,6 +122,10 @@ textarea{width:100%;min-height:170px;border:1px solid var(--line);border-radius:
 .extract ul{margin:0;padding-left:18px}
 .openline{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .openline .go{font-weight:600;color:var(--primary);font-size:13px}
+.peek summary{cursor:pointer;font-size:13px;font-weight:600;opacity:.9}
+.peek .msg{margin-top:8px;color:var(--ink);background:var(--surface)}
+.photo svg.ill{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.photo .tw{position:relative;z-index:1}.photo .badges,.photo .note,.photo .heart{z-index:1}
 .cluster{background:var(--bg);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
 .cluster .ln{display:flex;justify-content:space-between;gap:8px;font-size:13px}
 .persona{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px}
@@ -397,13 +401,17 @@ function vSearch(){
   <button class="btn sm primary" id="play" style="align-self:flex-start">Save ${P.name}'s ${P.script.length} listings</button></div>
   ${list.map(cardSearch).join('')}`;
 }
+function illus(l){ const tw=l.tower.slice(-1), n=l.audit_no;
+  const pal={A:['#2A2768','#4b47a3','#c9c6f2'],B:['#3a2a68','#6a4fb0','#e3d9fb'],C:['#1f3a68','#4170b5','#d3e3fb']}[tw]||['#2A2768','#4b47a3','#c9c6f2'];
+  let win=''; for(let r=0;r<7;r++) for(let c=0;c<5;c++){ const lit=((n*7+r*3+c*5)%4===0); win+=`<rect x="${132+c*18}" y="${40+r*20}" width="10" height="12" rx="1.5" fill="${lit?'#ffd98a':pal[2]}" opacity="${lit?0.95:0.55}"/>`; }
+  return `<svg class="ill" viewBox="0 0 360 202" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="sk${n}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${pal[1]}"/><stop offset="1" stop-color="${pal[0]}"/></linearGradient></defs><rect width="360" height="202" fill="url(#sk${n})"/><circle cx="${290-(n%5)*12}" cy="46" r="18" fill="#ffd98a" opacity=".35"/><rect x="40" y="96" width="60" height="106" fill="${pal[0]}" opacity=".55"/><rect x="250" y="80" width="80" height="122" fill="${pal[0]}" opacity=".5"/><rect x="120" y="26" width="112" height="176" rx="3" fill="${pal[0]}"/><rect x="120" y="26" width="112" height="8" fill="${pal[2]}" opacity=".25"/>${win}<rect x="0" y="194" width="360" height="8" fill="#000" opacity=".15"/></svg>`; }
 function cardSearch(l){
   const saved=S.saved.includes(l.audit_no); const chips=[];
   if(l.duplicate_cluster){ const k=L.filter(x=>x.duplicate_cluster===l.duplicate_cluster).length-1; chips.push(`<span class="chip pot">Also listed by ${k} other agenc${k>1?'ies':'y'}</span>`); }
   if(l.price_basis==='holiday_home') chips.push(`<span class="chip pot">Holiday-home let · bills included</span>`);
   if(l.audit_no===22||l.audit_no===23) chips.push(`<span class="chip">Photos also used on another listing</span>`);
   const badges=[]; if(l.verified) badges.push('<span class="badge v">✓ Verified</span>'); if(l.placement!=='standard') badges.push(`<span class="badge">${l.placement[0].toUpperCase()+l.placement.slice(1)}</span>`);
-  return `<article class="card"><div class="photo"><div class="badges">${badges.join('')}</div><span class="tw">${esc(l.tower.replace('Bloom Towers ','Tower '))}</span><span class="note">#${l.audit_no} · photos on PF</span>
+  return `<article class="card"><div class="photo">${illus(l)}<div class="badges">${badges.join('')}</div><span class="tw">${esc(l.tower.replace('Bloom Towers ','Tower '))}</span><span class="note">#${l.audit_no} · illustration · real photos on PF</span>
   <button class="heart" aria-pressed="${saved}" aria-label="${saved?'Remove':'Save'} listing #${l.audit_no}" data-save="${l.audit_no}">${saved?IC.heartF:IC.heart}</button></div>
   <div class="pad" data-open="${propOf(l)}" role="button" tabindex="0" style="cursor:pointer"><p class="xs muted">${ago(l.listed_date)}</p>
   <div class="price">${AED(l.price_aed)} ${l.offering==='rent'?'<small>yearly</small>':''}</div>
@@ -437,7 +445,7 @@ function vSaved(){
   <div class="summary flow"><div><span class="n">${S.saved.length}</span><span class="xs">listings saved</span></div><span class="arr" aria-hidden="true">→</span>
   <div><span class="n">${props.length}</span><span class="xs">${S.saved.length>props.length?'homes, copies grouped':'homes'}</span></div><span class="arr" aria-hidden="true">→</span>
   <div class="with"><span class="n">${cnt('ready')}</span><span class="xs">ready to enquire</span></div></div>
-  ${pending?`<button class="btn invert block" id="askAll">Approve: let Scout ask ${pending} agent${pending>1?'s':''} for me · simulated</button><p class="xs">Scout sends only the questions on each card below, through PF's normal enquiry channel, and brings the answers back here.</p>`:`<p class="xs">Each card below shows what to ask, or why.</p>`}</div>
+  ${pending?`<button class="btn invert block" id="askAll">Approve: let Scout ask ${pending} agent${pending>1?'s':''} for me · simulated</button><p class="xs">Scout sends only the questions on each card below, through PF's normal enquiry channel, and brings the answers back here.</p><details class="peek"><summary>See what an agent receives</summary>${agentCard(res.find(r=>r.step.k!=='aside'&&!S.sent[r.pid]).pid)}</details>`:`<p class="xs">Each card below shows what to ask, or why.</p>`}</div>
   ${vNeeds()}
   ${vGrouped()}
   ${res.map(cardSaved).join('')}
@@ -529,15 +537,30 @@ function vAsk(){
   ${via==='self'?`<p class="small muted">Copy the message or open WhatsApp with the text filled in. No number is attached in this prototype, so you pick the recipient. Scout can't see the reply in WhatsApp, so you add it here when it arrives.</p>
   <div class="row"><button class="btn" id="copy">Copy message</button><a class="btn" id="wa" href="https://wa.me/?text=${encodeURIComponent(text)}" target="_blank" rel="noopener">Open WhatsApp ${IC.ext}</a></div>
   <button class="btn primary block" id="sendSelf">I've sent it · track the reply here</button>`:
-  `<div class="msg"><p class="mono muted">WHAT THE AGENT RECEIVES · PF ENQUIRY</p>
-  <p class="small"><b>${esc(l.tower)} · ${l.size_sqft} sqft · ${AED(l.price_aed)} · listing ${l.listing_id}</b></p>
-  <p class="small">From ${P.name} (first name only) · ${shareList().join(' · ')}</p>
-  <ol class="small" style="margin:2px 0 0;padding-left:18px">${qs.map(q=>`<li>${esc(q)}</li>`).join('')}</ol>
-  <p class="xs muted">It lands in the agent's normal PF lead inbox as a qualified enquiry, so it still counts as their lead. No phone number or email is shared until you choose to continue. <b>Simulated: nothing is actually sent.</b></p></div>
+  `${agentCard(pid,target)}
   <button class="btn primary block" id="sendScout">Send through Scout · simulated</button>`}</div>`;
 }
 function shareList(){ const c=S.c, out=[]; if(c.moveIn) out.push('move-in by '+fmtDate(c.moveIn.date)); if(c.cheques) out.push('at least '+c.cheques.min+' cheques'); if(S.kind==='buyer'&&c.purpose) out.push(c.purpose==='live'?'buying to live in':'buying to invest'); return out.length?out:['nothing else']; }
+function agentCard(pid,target){ const m=membersOf(pid), P=PERSONA[S.kind], r=assess(pid);
+  const tg=target ?? (pid==='CB'?'all':String(m[0].audit_no)); const l=tg==='all'?m[0]:byNo(+tg);
+  return `<div class="msg"><p class="mono muted">WHAT THE AGENT RECEIVES · PF ENQUIRY</p>
+  <p class="small"><b>${esc(l.tower)} · ${l.size_sqft} sqft · ${AED(l.price_aed)} · listing ${l.listing_id}</b></p>
+  <p class="small">From ${P.name} (first name only) · ${shareList().join(' · ')}</p>
+  <ol class="small" style="margin:2px 0 0;padding-left:18px">${r.questions.map(q=>`<li>${esc(q)}</li>`).join('')}</ol>
+  <p class="xs muted">It lands in the agent's normal PF lead inbox as a qualified enquiry, so it still counts as their lead. No phone number or email is shared until the searcher chooses to continue. <b>Simulated: nothing is actually sent.</b></p></div>`; }
+function who(s){ const m=String(s).match(/agency of #(\d+)/i); return /both agencies/i.test(s)?'both agencies':m?'agency of #'+m[1]:'agent'; }
 function extracted(pid){ const A=S.answers[pid]||{}, o=[];
+  if(A.priceAnswers){ const ps=[...A.priceAnswers.matchAll(/AED ([\d,]+) \((?:agency of )?#(\d+)\)/g)].map(x=>`AED ${x[1]} (#${x[2]})`);
+    const one=A.priceAnswers.match(/agency of #(\d+) says (AED [\d,]+)\. #(\d+)/);
+    o.push(one?`Price: ${one[2]} per #${one[1]} · #${one[3]} not asked`:`Price: ${ps.join(' vs ')} · still differ`); }
+  if(A.available) o.push(`Available: yes · per ${who(A.available)}`);
+  if(A.cheques) o.push(`Cheques accepted: ${A.chequesN??A.cheques}`);
+  if(A.tenancyEnd){ o.push('Tenanted until: August 2027 · month only'); o.push('Exact end date and handover date: not given'); }
+  else if(A.occupancy){ o.push(`Vacant: ${/vacant/i.test(A.occupancy)?'yes':'unclear'} · per ${who(A.occupancy)}`); const h=A.occupancy.match(/hand over before ([^.]+)\./); if(h) o.push(`Handover: before ${h[1]} · per ${who(A.occupancy)}`); }
+  if(A.total) o.push('Total yearly cost: above AED 80,000 · exact amount not given');
+  if(A.viewing) o.push(`Viewing offered: ${A.viewing}`);
+  return o; }
+function extractedOld(pid){ const A=S.answers[pid]||{}, o=[];
   if(A.priceAnswers) o.push('Price: '+A.priceAnswers);
   if(A.available) o.push('Availability: '+A.available);
   if(A.cheques) o.push('Cheques: '+A.cheques);
