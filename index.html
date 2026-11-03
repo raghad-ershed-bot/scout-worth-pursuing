@@ -1,0 +1,566 @@
+<title>Scout: Worth Pursuing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: phone-width product UI modelled on portal search patterns: price-first listing cards, a Scout entry card, a saved list that answers "what next?". */
+:root{
+  --bg:#F1F1F5; --surface:#FFFFFF; --ink:#1D1B3F; --muted:#6B6A85; --line:#E3E2EC;
+  --primary:#2A2768; --primary-ink:#FFFFFF; --primary-soft:#ECEBF6; --red:#E2343E; --red-soft:#FDE9EA; --photo1:#CFCFE2; --photo2:#ECE9F2;
+  --fit:#17734A; --fit-bg:#E3F4EB; --pot:#975A00; --pot-bg:#FCF0DC; --con:#B42318; --con-bg:#FDE8E6; --unk:#3D5A80; --unk-bg:#E6EDF6;
+  --sim:#6C3FB5; --sim-bg:#F1EAFB;
+  --f-display:"DM Serif Display",Georgia,"Times New Roman",serif;
+  --f-body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111120; --surface:#1B1B2D; --ink:#EDEDF6; --muted:#A4A3BE; --line:#2D2C45;
+  --primary:#B3AEFF; --primary-ink:#15133A; --primary-soft:#27254B; --red:#FF7A80; --red-soft:#3A1B1F; --photo1:#2B2A48; --photo2:#3A3758;
+  --fit:#6FD3A0; --fit-bg:#15301F; --pot:#F2B65C; --pot-bg:#34270F; --con:#FF8F84; --con-bg:#3A1B19; --unk:#9FBDE3; --unk-bg:#1B2638;
+  --sim:#CDB0F7; --sim-bg:#2B2043; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111120; --surface:#1B1B2D; --ink:#EDEDF6; --muted:#A4A3BE; --line:#2D2C45;
+  --primary:#B3AEFF; --primary-ink:#15133A; --primary-soft:#27254B; --red:#FF7A80; --red-soft:#3A1B1F; --photo1:#2B2A48; --photo2:#3A3758;
+  --fit:#6FD3A0; --fit-bg:#15301F; --pot:#F2B65C; --pot-bg:#34270F; --con:#FF8F84; --con-bg:#3A1B19; --unk:#9FBDE3; --unk-bg:#1B2638;
+  --sim:#CDB0F7; --sim-bg:#2B2043; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.app{max-width:440px;margin:0 auto;padding-block:0 104px;display:flex;flex-direction:column;gap:14px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;font-weight:400}
+h1{font-size:28px;line-height:1.1} h2{font-size:22px;line-height:1.15} h3{font-size:19px;line-height:1.2}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:13px} .xs{font-size:12px}
+.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.03em}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:10px max(16px,env(safe-area-inset-left,0px));display:flex;justify-content:space-between;align-items:center;gap:8px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-size:21px}
+.brand .dot{width:32px;height:32px;border-radius:10px;background:var(--primary);color:var(--primary-ink);display:grid;place-items:center}
+.brand small{white-space:nowrap;display:block;font-family:var(--f-body);font-weight:500;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.proto{background:var(--sim-bg);color:var(--sim);border-radius:10px;padding:8px 12px;font-size:12px;line-height:1.4}
+.proto b{font-weight:700}
+button{font:inherit;cursor:pointer;color:inherit}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:10px 14px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
+.btn.primary{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.btn.soft{background:var(--primary-soft);color:var(--primary);border-color:transparent}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--primary);padding-inline:6px}
+.btn.sm{padding:7px 11px;font-size:13px;white-space:nowrap}
+.btn.block{width:100%}
+.btn:focus-visible,.tab:focus-visible,a:focus-visible,textarea:focus-visible,.opt:focus-visible,.heart:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.pad{padding:14px;display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.price{font-family:var(--f-display);font-size:24px;font-weight:400;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.price small{font-size:13px;font-weight:500;color:var(--muted)}
+.photo{position:relative;aspect-ratio:16/9;max-width:100%;background:linear-gradient(135deg,var(--photo1),var(--photo2));display:flex;align-items:flex-end;padding:10px}
+.photo .tw{font-family:var(--f-display);font-weight:400;font-size:30px;color:var(--surface);opacity:.9;letter-spacing:-.02em;text-shadow:0 1px 8px rgba(0,0,0,.15)}
+.photo .badges{position:absolute;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap}
+.photo .note{position:absolute;bottom:10px;right:10px;font-size:11px;background:var(--surface);color:var(--muted);border-radius:6px;padding:2px 6px}
+.badge{font-size:11px;font-weight:700;border-radius:6px;padding:3px 7px;background:var(--surface);color:var(--ink)}
+.badge.v{color:var(--fit)}
+.heart{position:absolute;top:8px;right:8px;width:38px;height:38px;border-radius:999px;border:0;background:var(--surface);display:grid;place-items:center;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.heart[aria-pressed="true"]{background:var(--primary);color:var(--primary-ink)}
+.facts{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+.facts span{display:inline-flex;align-items:center;gap:5px}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:600;background:var(--bg);color:var(--muted)}
+.chip.pot{background:var(--pot-bg);color:var(--pot)} .chip.sim{background:var(--sim-bg);color:var(--sim)} .chip.pri{background:var(--primary-soft);color:var(--primary)}
+.eyebrow{font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hero{background:var(--primary);color:var(--primary-ink);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.hero .eyebrow{color:var(--primary-ink);opacity:.75;display:flex;align-items:center;gap:6px}
+.hero .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--red)}
+.hero h2{color:var(--primary-ink)}
+.hero .summary>div{background:rgba(255,255,255,.08)}
+.hero .summary .with{background:rgba(255,255,255,.16)}
+.hero .summary .n,.hero .summary .with .n{color:var(--primary-ink)}
+.hero .xs,.hero .muted{color:var(--primary-ink);opacity:.8}
+.tile{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--primary-soft);color:var(--primary)}
+.scout{background:var(--primary);color:var(--primary-ink);border-radius:18px;padding:14px;display:flex;gap:12px;align-items:center;border:0;text-align:left;width:100%}
+.scout .ic{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none}
+.scout b{display:block;font-size:15px} .scout span.s{font-size:12px;opacity:.85}
+.status{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:12px;border-radius:999px;padding:4px 11px}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.status.ready{background:var(--fit-bg);color:var(--fit)} .status.ask{background:var(--pot-bg);color:var(--pot)} .status.aside{background:var(--con-bg);color:var(--con)} .status.proceed{background:var(--con-bg);color:var(--con)}
+.why{font-size:13px;color:var(--muted)}
+.qlist{margin:0;padding:10px 12px 10px 30px;background:var(--bg);border-radius:10px;font-size:13px;display:flex;flex-direction:column;gap:4px}
+.crow{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding-block:9px;border-top:1px solid var(--line)}
+.out{font-size:10px;font-weight:700;border-radius:6px;padding:3px 6px;white-space:nowrap;text-transform:uppercase;letter-spacing:.05em;margin-top:1px}
+.out.Fits{background:var(--fit-bg);color:var(--fit)} .out.Potential{background:var(--pot-bg);color:var(--pot)} .out.Conflict{background:var(--con-bg);color:var(--con)} .out.Unknown{background:var(--unk-bg);color:var(--unk)}
+.src{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.02em}
+.src.sim{color:var(--sim)}
+details>summary{cursor:pointer;color:var(--primary);font-weight:600;font-size:13px;list-style:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::after{content:" ▾"} details[open]>summary::after{content:" ▴"}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));z-index:6}
+.tabs .inner{max-width:440px;width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
+.tab{border:0;background:transparent;padding:8px 4px 10px;color:var(--muted);font-weight:600;font-size:11.5px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tab[aria-current="page"]{color:var(--primary)}
+.tab .count{font-size:10px;background:var(--primary);color:var(--primary-ink);border-radius:999px;padding:0 6px;margin-left:2px}
+.sheetwrap{position:fixed;inset:0;background:rgba(14,13,40,.5);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sheet{background:var(--surface);width:100%;max-width:440px;border-radius:20px 20px 0 0;padding:20px max(16px,env(safe-area-inset-left,0px)) calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;max-height:88vh;overflow:auto}
+.grab{width:40px;height:4px;border-radius:4px;background:var(--line);align-self:center}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 13px;font-weight:600;font-size:14px}
+.opt[aria-pressed="true"]{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.whyask{font-size:13px;color:var(--muted);background:var(--bg);border-radius:10px;padding:10px 12px}
+textarea{width:100%;min-height:170px;border:1px solid var(--line);border-radius:10px;padding:12px;font:14px/1.45 var(--f-body);background:var(--bg);color:var(--ink)}
+.msg{border-radius:12px;padding:10px 12px;background:var(--bg);display:flex;flex-direction:column;gap:4px}
+.msg.agent{background:var(--sim-bg)}
+.log{padding-left:18px;margin:0;display:flex;flex-direction:column;gap:8px}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.summary>div{border-radius:12px;padding:12px;background:var(--bg);display:flex;flex-direction:column;gap:2px}
+.summary .n{font-family:var(--f-display);font-size:34px;font-weight:400;font-variant-numeric:tabular-nums;line-height:1.1}
+.summary .with{background:var(--primary-soft)} .summary .with .n{color:var(--primary)}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:6px;align-items:stretch}
+.flow .arr{align-self:center;opacity:.6;font-size:14px}
+.cluster{background:var(--bg);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.cluster .ln{display:flex;justify-content:space-between;gap:8px;font-size:13px}
+.persona{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.persona .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--primary)}
+table.tbl{width:100%;border-collapse:collapse;font-size:13px}
+table.tbl td,table.tbl th{border-top:1px solid var(--line);padding:7px 4px;text-align:left;vertical-align:top}
+a{color:var(--primary)}
+.hl{box-shadow:0 0 0 2px var(--primary)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}}
+</style>
+
+<div class="app" id="app"></div>
+<nav class="tabs" id="tabs" hidden><div class="inner">
+  <button class="tab" data-tab="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
+  <button class="tab" data-tab="saved"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Worth pursuing?</button>
+  <button class="tab" data-tab="answers"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Answers</button>
+</div></nav>
+<div id="sheet"></div>
+
+<script>
+const DATA = {"meta": {"source": "Property Finder listing pages for 1-bedroom apartments in Bloom Towers, JVC, checked 3 Nov 2026 (see AUDIT.md). Prices and availability may have changed since.", "field_sources": {"price_aed,size_sqft,furnished,cheques,verified,placement,listed_date,available_from": "Listing (structured PF fields)", "tenancy_from_agent_text,price_basis,note": "Agent's description / our audit", "duplicate_cluster": "Our check, 3 Nov 2026 (matching photos, same tower and size)"}, "cheques_null_means": "Not stated in the cheques field (Unknown), not zero.", "tenancy_values": "vacant | tenanted | unknown, from the agent's description, not verified. Rent listings: null.", "clusters": {"A": "Audit #21, #25, #26: same flat, Tower A, 778 sqft, furnished; AED 949,999 / 950,000 / 950,000 from 3 agencies", "B": "Audit #19, #29: same flat, Tower A, 794 sqft, furnished; AED 960,000 vs 1,000,000 from 2 agencies"}, "do_not": "Do not copy or hot-link PF photos. Do not attribute simulated replies to named agents."}, "listings": [{"audit_no": 1, "offering": "rent", "listing_id": "60126340", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-2PurwxAGplI.html", "tower": "Bloom Towers A", "price_aed": 90000, "price_period": "yearly", "size_sqft": 794, "aed_per_sqft": 113.4, "furnished": "NO", "cheques": 4, "agent": "Mohamed Jamil Abdulkader Shiro", "agency": "Shiro Estate", "verified": true, "placement": "premium", "listed_date": "2026-03-05", "available_from": "2026-03-05", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": "Title: 'Unfurnished Vacant Unit | Multiple Units Available'. Live since Mar 2026."}, {"audit_no": 2, "offering": "rent", "listing_id": "76574175", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-c-76574175.html", "tower": "Bloom Towers C", "price_aed": 62000, "price_period": "yearly", "size_sqft": 673, "aed_per_sqft": 92.1, "furnished": "NO", "cheques": null, "agent": "Emirates International Property Services (company name; listing marked 'Direct From Developer')", "agency": "Emirates International Property Services L.L.C - Dubai Branch", "verified": false, "placement": "premium", "listed_date": "2026-04-14", "available_from": "2026-08-21", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": "Shown on Property Finder as 'Direct From Developer'; the agent field carries the company name. Not verified."}, {"audit_no": 3, "offering": "rent", "listing_id": "159157382", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-b-159157382.html", "tower": "Bloom Towers B", "price_aed": 63000, "price_period": "yearly", "size_sqft": 655, "aed_per_sqft": 96.2, "furnished": "NO", "cheques": null, "agent": "Sailee Kanhekar", "agency": "VServe Real Estate", "verified": true, "placement": "featured", "listed_date": "2026-10-14", "available_from": "2026-10-14", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": "Title mentions 6 cheques; cheques field empty."}, {"audit_no": 4, "offering": "rent", "listing_id": "152362217", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-b-152362217.html", "tower": "Bloom Towers B", "price_aed": 85000, "price_period": "yearly", "size_sqft": 672, "aed_per_sqft": 126.5, "furnished": "YES", "cheques": null, "agent": "Ara Dacas", "agency": "Carpediem Lifestyle", "verified": false, "placement": "featured", "listed_date": "2026-09-30", "available_from": "2026-11-15", "tenancy_from_agent_text": null, "price_basis": "holiday_home", "duplicate_cluster": null, "note": "Holiday-home let (DTCM permit JUM-BLO-7ZIND). Agent's description: annual price includes utility bills (DEWA, DU, chiller); extra booking fee, VAT, tourism tax and security deposit (amounts not stated)."}, {"audit_no": 5, "offering": "rent", "listing_id": "167904710", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-c-167904710.html", "tower": "Bloom Towers C", "price_aed": 70000, "price_period": "yearly", "size_sqft": 731, "aed_per_sqft": 95.8, "furnished": "YES", "cheques": 1, "agent": "Khalid Amuri", "agency": "Whitewill Real Estate Brokers L.L.C", "verified": true, "placement": "featured", "listed_date": "2026-11-02", "available_from": "2026-11-02", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 6, "offering": "rent", "listing_id": "167904505", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-c-167904505.html", "tower": "Bloom Towers C", "price_aed": 70000, "price_period": "yearly", "size_sqft": 731, "aed_per_sqft": 95.8, "furnished": "YES", "cheques": 1, "agent": "Khalid Amuri", "agency": "Whitewill Real Estate Brokers L.L.C", "verified": true, "placement": "featured", "listed_date": "2026-11-02", "available_from": "2026-11-02", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 7, "offering": "rent", "listing_id": "8607476", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-8607476.html", "tower": "Bloom Towers A", "price_aed": 80000, "price_period": "yearly", "size_sqft": 742, "aed_per_sqft": 107.8, "furnished": "YES", "cheques": null, "agent": "Ara Dacas", "agency": "Carpediem Lifestyle", "verified": false, "placement": "featured", "listed_date": "2024-12-05", "available_from": "2026-11-02", "tenancy_from_agent_text": null, "price_basis": "holiday_home", "duplicate_cluster": null, "note": "Holiday-home let (DTCM permit JUM-BLO-A4SSK). Agent's description: annual price includes utility bills; monthly rentals mentioned; extra booking fee, VAT, tourism tax and security deposit (amounts not stated). Page shows 'Listed more than 6 months ago'; page data says listed 5 Dec 2024."}, {"audit_no": 8, "offering": "rent", "listing_id": "165038395", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-165038395.html", "tower": "Bloom Towers A", "price_aed": 60000, "price_period": "yearly", "size_sqft": 697, "aed_per_sqft": 86.1, "furnished": "NO", "cheques": 4, "agent": "Hafiz Muhammad Dilawar", "agency": "Burj Blizz Real Estate", "verified": true, "placement": "standard", "listed_date": "2026-10-27", "available_from": "2026-10-27", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 9, "offering": "rent", "listing_id": "165038971", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-c-165038971.html", "tower": "Bloom Towers C", "price_aed": 60000, "price_period": "yearly", "size_sqft": 657, "aed_per_sqft": 91.3, "furnished": "NO", "cheques": 4, "agent": "Hamza Zafar", "agency": "Burj Blizz Real Estate", "verified": true, "placement": "standard", "listed_date": "2026-10-27", "available_from": "2026-10-27", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 10, "offering": "rent", "listing_id": "165037002", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-c-165037002.html", "tower": "Bloom Towers C", "price_aed": 60000, "price_period": "yearly", "size_sqft": 655, "aed_per_sqft": 91.6, "furnished": "NO", "cheques": 4, "agent": "Hamza Zafar", "agency": "Burj Blizz Real Estate", "verified": true, "placement": "standard", "listed_date": "2026-10-27", "available_from": "2026-10-27", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 11, "offering": "rent", "listing_id": "113280088", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-b-113280088.html", "tower": "Bloom Towers B", "price_aed": 85000, "price_period": "yearly", "size_sqft": 655, "aed_per_sqft": 129.8, "furnished": "YES", "cheques": 1, "agent": "Ankita Havelia", "agency": "Trinity Real Estate Brokers L.L.C", "verified": true, "placement": "standard", "listed_date": "2026-07-08", "available_from": "2026-07-08", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": "Fewer photos (6); darker finishes than most Bloom photos (unconfirmed)."}, {"audit_no": 12, "offering": "rent", "listing_id": "166538603", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-b-166538603.html", "tower": "Bloom Towers B", "price_aed": 64900, "price_period": "yearly", "size_sqft": 678, "aed_per_sqft": 95.7, "furnished": "YES", "cheques": 2, "agent": "Ahmed Shehada", "agency": "Forefront Realty", "verified": true, "placement": "standard", "listed_date": "2026-10-30", "available_from": "2026-08-18", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 13, "offering": "rent", "listing_id": "165026496", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-c-165026496.html", "tower": "Bloom Towers C", "price_aed": 64998, "price_period": "yearly", "size_sqft": 672, "aed_per_sqft": 96.7, "furnished": "YES", "cheques": 1, "agent": "Jon Di", "agency": "Quinta Estates L.L.C", "verified": true, "placement": "standard", "listed_date": "2026-10-27", "available_from": "2026-08-06", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 14, "offering": "rent", "listing_id": "166045858", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-166045858.html", "tower": "Bloom Towers A", "price_aed": 70000, "price_period": "yearly", "size_sqft": 697, "aed_per_sqft": 100.4, "furnished": "YES", "cheques": 1, "agent": "Meagan Berry", "agency": "McCone Properties", "verified": true, "placement": "standard", "listed_date": "2026-10-29", "available_from": "2026-10-29", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 15, "offering": "rent", "listing_id": "167892792", "url": "https://www.propertyfinder.ae/en/plp/rent/apartment-for-rent-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-b-167892792.html", "tower": "Bloom Towers B", "price_aed": 64995, "price_period": "yearly", "size_sqft": 655, "aed_per_sqft": 99.2, "furnished": "YES", "cheques": 4, "agent": "Alexander Kaminski", "agency": "Atomic Properties", "verified": true, "placement": "standard", "listed_date": "2026-11-02", "available_from": "2026-11-02", "tenancy_from_agent_text": null, "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 16, "offering": "sale", "listing_id": "155093371", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-b-155093371.html", "tower": "Bloom Towers B", "price_aed": 910000, "price_period": "total", "size_sqft": 673, "aed_per_sqft": 1352.2, "furnished": "NO", "cheques": null, "agent": "Muhammad Shafique", "agency": "House & Hedges Real Estate", "verified": true, "placement": "standard", "listed_date": "2026-10-06", "available_from": null, "tenancy_from_agent_text": "vacant", "price_basis": "standard", "duplicate_cluster": null, "note": "Title claims 'Lowest Price in Market' (scope not stated; 8 of 38 Bloom 1BR sale listings were cheaper on 3 Nov 2026)."}, {"audit_no": 17, "offering": "sale", "listing_id": "161402144", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-161402144.html", "tower": "Bloom Towers A", "price_aed": 940000, "price_period": "total", "size_sqft": 692, "aed_per_sqft": 1358.4, "furnished": "YES", "cheques": null, "agent": "Samer Abdallah", "agency": "Driven Properties", "verified": true, "placement": "premium", "listed_date": "2026-10-19", "available_from": null, "tenancy_from_agent_text": "tenanted", "price_basis": "standard", "duplicate_cluster": null, "note": "'Rented' appears in the agent's description; tenancy not confirmed."}, {"audit_no": 18, "offering": "sale", "listing_id": "166075601", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-166075601.html", "tower": "Bloom Towers A", "price_aed": 839999, "price_period": "total", "size_sqft": 641, "aed_per_sqft": 1310.5, "furnished": "NO", "cheques": null, "agent": "Andre Tehrany", "agency": "YHU Properties", "verified": true, "placement": "premium", "listed_date": "2026-10-29", "available_from": null, "tenancy_from_agent_text": "vacant", "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 19, "offering": "sale", "listing_id": "165599071", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-165599071.html", "tower": "Bloom Towers A", "price_aed": 960000, "price_period": "total", "size_sqft": 794, "aed_per_sqft": 1209.1, "furnished": "YES", "cheques": null, "agent": "Siham Yahyaoui", "agency": "Homify Properties", "verified": true, "placement": "featured", "listed_date": "2026-10-28", "available_from": null, "tenancy_from_agent_text": "unknown", "price_basis": "standard", "duplicate_cluster": "B", "note": null}, {"audit_no": 20, "offering": "sale", "listing_id": "166554660", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-c-166554660.html", "tower": "Bloom Towers C", "price_aed": 990000, "price_period": "total", "size_sqft": 742, "aed_per_sqft": 1334.2, "furnished": "NO", "cheques": null, "agent": "Murodjon Tojidinov", "agency": "WOW Properties", "verified": false, "placement": "featured", "listed_date": "2026-10-30", "available_from": null, "tenancy_from_agent_text": "tenanted", "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 21, "offering": "sale", "listing_id": "159174766", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-159174766.html", "tower": "Bloom Towers A", "price_aed": 949999, "price_period": "total", "size_sqft": 778, "aed_per_sqft": 1221.1, "furnished": "YES", "cheques": null, "agent": "Andre Tehrany", "agency": "YHU Properties", "verified": true, "placement": "featured", "listed_date": "2026-10-14", "available_from": null, "tenancy_from_agent_text": "vacant", "price_basis": "standard", "duplicate_cluster": "A", "note": null}, {"audit_no": 22, "offering": "sale", "listing_id": "163698847", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-163698847.html", "tower": "Bloom Towers A", "price_aed": 849998, "price_period": "total", "size_sqft": 722, "aed_per_sqft": 1177.3, "furnished": "NO", "cheques": null, "agent": "Rahul Chandroth", "agency": "BITS Real Estate Brokers L.L.C.", "verified": true, "placement": "standard", "listed_date": "2026-10-24", "available_from": null, "tenancy_from_agent_text": "vacant", "price_basis": "standard", "duplicate_cluster": null, "note": "Same photo set as #23 although sizes differ (722 vs 697 sqft). Not grouped; show as a note only."}, {"audit_no": 23, "offering": "sale", "listing_id": "162788206", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-162788206.html", "tower": "Bloom Towers A", "price_aed": 850000, "price_period": "total", "size_sqft": 697, "aed_per_sqft": 1219.5, "furnished": "NO", "cheques": null, "agent": "Rahul Chandroth", "agency": "BITS Real Estate Brokers L.L.C.", "verified": true, "placement": "standard", "listed_date": "2026-10-22", "available_from": null, "tenancy_from_agent_text": "vacant", "price_basis": "standard", "duplicate_cluster": null, "note": "Same photo set as #22 although sizes differ. Not grouped; show as a note only."}, {"audit_no": 24, "offering": "sale", "listing_id": "166067473", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-b-166067473.html", "tower": "Bloom Towers B", "price_aed": 1000000, "price_period": "total", "size_sqft": 673, "aed_per_sqft": 1485.9, "furnished": "NO", "cheques": null, "agent": "Nehal Ahmed", "agency": "Luxven Real Estate", "verified": true, "placement": "standard", "listed_date": "2026-10-29", "available_from": null, "tenancy_from_agent_text": "tenanted", "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 25, "offering": "sale", "listing_id": "167436299", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-167436299.html", "tower": "Bloom Towers A", "price_aed": 950000, "price_period": "total", "size_sqft": 778, "aed_per_sqft": 1221.1, "furnished": "YES", "cheques": null, "agent": "Farid Sepieh", "agency": "Licorne Real Estate", "verified": true, "placement": "standard", "listed_date": "2026-11-01", "available_from": null, "tenancy_from_agent_text": "unknown", "price_basis": "standard", "duplicate_cluster": "A", "note": null}, {"audit_no": 26, "offering": "sale", "listing_id": "165500074", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-165500074.html", "tower": "Bloom Towers A", "price_aed": 950000, "price_period": "total", "size_sqft": 778, "aed_per_sqft": 1221.1, "furnished": "YES", "cheques": null, "agent": "Benjamin Larrad", "agency": "Huspy Dubai", "verified": true, "placement": "standard", "listed_date": "2026-10-28", "available_from": null, "tenancy_from_agent_text": "unknown", "price_basis": "standard", "duplicate_cluster": "A", "note": null}, {"audit_no": 27, "offering": "sale", "listing_id": "161412964", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-b-161412964.html", "tower": "Bloom Towers B", "price_aed": 1000000, "price_period": "total", "size_sqft": 656, "aed_per_sqft": 1524.4, "furnished": "YES", "cheques": null, "agent": "Kacper Michalski", "agency": "Luxfolio Real Estate Brokers LLC", "verified": true, "placement": "standard", "listed_date": "2026-10-19", "available_from": null, "tenancy_from_agent_text": "tenanted", "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 28, "offering": "sale", "listing_id": "164577708", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-164577708.html", "tower": "Bloom Towers A", "price_aed": 850000, "price_period": "total", "size_sqft": 700, "aed_per_sqft": 1214.3, "furnished": "NO", "cheques": null, "agent": "Edward Turner", "agency": "Huspy Dubai", "verified": true, "placement": "standard", "listed_date": "2026-10-26", "available_from": null, "tenancy_from_agent_text": "vacant", "price_basis": "standard", "duplicate_cluster": null, "note": null}, {"audit_no": 29, "offering": "sale", "listing_id": "162316871", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-a-162316871.html", "tower": "Bloom Towers A", "price_aed": 1000000, "price_period": "total", "size_sqft": 794, "aed_per_sqft": 1259.4, "furnished": "YES", "cheques": null, "agent": "Haris Khalil Muhammad Khalil", "agency": "Burj Blizz Real Estate", "verified": true, "placement": "standard", "listed_date": "2026-10-21", "available_from": null, "tenancy_from_agent_text": "unknown", "price_basis": "standard", "duplicate_cluster": "B", "note": null}, {"audit_no": 30, "offering": "sale", "listing_id": "156930989", "url": "https://www.propertyfinder.ae/en/plp/buy/apartment-for-sale-dubai-jumeirah-village-circle-district-10-bloom-towers-bloom-towers-c-156930989.html", "tower": "Bloom Towers C", "price_aed": 950000, "price_period": "total", "size_sqft": 657, "aed_per_sqft": 1446.0, "furnished": "NO", "cheques": null, "agent": "Nneka Achugo", "agency": "First Bridge Real Estate Brokers L.L.C", "verified": true, "placement": "standard", "listed_date": "2026-10-09", "available_from": null, "tenancy_from_agent_text": "unknown", "price_basis": "standard", "duplicate_cluster": null, "note": "Listing field says unfurnished; photos show a furnished flat (possibly tenant's furniture; unknown)."}]};
+const L = DATA.listings;
+const byNo = n => L.find(l => l.audit_no === n);
+const AED = n => 'AED ' + n.toLocaleString('en-US');
+const fmtDate = d => { if(!d) return null; const [y,m,dd]=d.split('-').map(Number); return new Date(Date.UTC(y,m-1,dd)).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}); };
+const now = () => new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const PERSONA = {
+  renter: { name:'Sara', offering:'rent', budget:80000, furnishedOnly:true, script:[15,5,12,7],
+    intro:'Sara is looking for a furnished 1-bedroom to rent in Bloom Towers, JVC, up to AED 80,000 a year.' },
+  buyer: { name:'Omar', offering:'sale', budget:1000000, furnishedOnly:false, script:[21,25,19,29,24,18],
+    intro:'Omar wants to buy a 1-bedroom in Bloom Towers, JVC, to live in, up to AED 1,000,000.' }
+};
+// Scripted example answers for the progressive questions (shown preselected; user can change)
+const SCRIPTED = {
+  budgetFirm:'firm', moveIn:{renter:'2026-12-01', buyer:'2027-02-01'}, moveFirm:'firm', chequesMin:4, chequesFirm:'flexible', holidayOk:'yes', purpose:'live'
+};
+
+let S; // state
+function reset(kind){
+  S = { kind, view:'search', saved:[], c:{}, asked:{}, queue:[], kept:{}, answers:{}, sent:{}, log:[], detail:null, ask:null };
+  S.c.budget = { value: PERSONA[kind].budget, firm: null };
+}
+
+/* ---------- properties & clusters ---------- */
+function propOf(l){ return l.duplicate_cluster ? 'C'+l.duplicate_cluster : 'L'+l.audit_no; }
+function membersOf(pid){ return pid[0]==='C' ? L.filter(l=>l.duplicate_cluster===pid.slice(1)) : [byNo(+pid.slice(1))]; }
+function savedProps(){ const out=[]; S.saved.forEach(n=>{const p=propOf(byNo(n)); if(!out.includes(p)) out.push(p);}); return out; }
+function propTitle(pid){ const m=membersOf(pid); const l=m[0];
+  return (pid[0]==='C' ? 'One flat, '+m.length+' agencies · ' : '#'+l.audit_no+' · ') + l.tower + ' · ' + l.size_sqft + ' sqft'; }
+
+/* ---------- constraint questions (progressive) ---------- */
+function questionsFor(l){
+  const q=[]; const c=S.c;
+  if(c.budget.firm===null && !S.queue.includes('budgetFirm')) q.push('budgetFirm');
+  if(S.kind==='renter'){
+    if(!c.moveIn) q.push('moveIn');
+    if((l.cheques===null || l.cheques<=2) && !c.cheques) q.push('cheques');
+    if(l.price_basis==='holiday_home' && !c.holidayOk) q.push('holiday');
+  } else {
+    if(!c.purpose) q.push('purpose');
+    const needsMove = l => l.tenancy_from_agent_text!=='vacant';
+    if(!c.moveIn && (c.purpose==='live' || !c.purpose) && needsMove(l)) q.push('moveInBuyer');
+  }
+  return q.filter(x=>!S.queue.includes(x));
+}
+function openQuestion(){
+  const k=S.queue[0]; const box=document.getElementById('sheet');
+  if(!k){ box.innerHTML=''; render(); return; }
+  if(k==='moveInBuyer' && S.c.purpose==='invest'){ S.queue.shift(); return openQuestion(); }
+  const P=PERSONA[S.kind];
+  const Q={
+    budgetFirm:{t:`Is ${AED(P.budget)} a firm limit?`, why:'You set this in your search. I use it to decide whether an over-budget property is set aside or kept as a question.',
+      opts:[['firm','Firm'],['flexible','I could stretch']], def:SCRIPTED.budgetFirm,
+      save:v=>{S.c.budget.firm=v; logC('Budget '+AED(P.budget)+', '+v);} },
+    moveIn:{t:'When do you need to move in by?', why:'Listings state an "available from" date. I compare it with yours. Current availability is a separate question for the agent.',
+      opts:[['2026-12-01','1 Dec 2026'],['2027-01-01','1 Jan 2027'],['2027-03-01','1 Mar 2027']], def:SCRIPTED.moveIn.renter, firm:true,
+      save:(v,f)=>{S.c.moveIn={date:v,firm:f}; logC('Move in by '+fmtDate(v)+', '+f);} },
+    cheques:{t:'How many cheques do you need, at minimum?', why:'You saved a listing that shows 1–2 cheques or doesn\'t say. Fewer cheques means paying more upfront.',
+      opts:[['1','1'],['2','2'],['4','4'],['6','6'],['12','12']], def:String(SCRIPTED.chequesMin), firm:true, firmDef:SCRIPTED.chequesFirm,
+      save:(v,f)=>{S.c.cheques={min:+v,firm:f}; logC('At least '+v+' cheques, '+f);} },
+    holiday:{t:'This one is a holiday-home let. Still interested?', why:'Its yearly price includes bills, but the booking fee, VAT, tourism tax and deposit are extra and the amounts aren\'t stated. So it isn\'t comparable with a standard lease.',
+      opts:[['yes','Yes, if the total fits my budget'],['no','No, standard leases only']], def:SCRIPTED.holidayOk,
+      save:v=>{S.c.holidayOk=v; logC('Holiday-home lets: '+(v==='yes'?'OK if the total fits':'not wanted'));} },
+    purpose:{t:'Will you live in it or invest?', why:'A tenanted flat can suit an investor and not someone moving in.',
+      opts:[['live','Live in it'],['invest','Invest']], def:SCRIPTED.purpose,
+      save:v=>{S.c.purpose=v; logC(v==='live'?'Buying to live in':'Buying to invest');} },
+    moveInBuyer:{t:'When do you need to move in by?', why:'This listing is tenanted or doesn\'t say whether it\'s vacant. I need your date to judge it.',
+      opts:[['2027-02-01','1 Feb 2027'],['2027-06-01','1 Jun 2027'],['2027-12-01','1 Dec 2027']], def:SCRIPTED.moveIn.buyer, firm:true, firmDef:'firm',
+      save:(v,f)=>{S.c.moveIn={date:v,firm:f}; logC('Move in by '+fmtDate(v)+', '+f);} }
+  }[k];
+  let val=Q.def, firm=Q.firmDef||SCRIPTED.moveFirm;
+  box.innerHTML=`<div class="sheetwrap" role="dialog" aria-modal="true" aria-labelledby="qT"><div class="sheet"><span class="grab"></span>
+    <p class="mono muted">SCOUT · ONE QUESTION</p>
+    <h2 id="qT">${esc(Q.t)}</h2>
+    <p class="whyask"><b>Why I'm asking:</b> ${esc(Q.why)}</p>
+    <div class="opts" id="qO">${Q.opts.map(([v,lab])=>`<button class="opt" data-v="${v}" aria-pressed="${v===val}">${esc(lab)}</button>`).join('')}</div>
+    ${Q.firm?`<div><p class="small muted">Is that firm?</p><div class="opts" id="qF">${['firm','flexible'].map(v=>`<button class="opt" data-f="${v}" aria-pressed="${v===firm}">${v==='firm'?'Firm':'Flexible'}</button>`).join('')}</div></div>`:''}
+    <p class="small muted">The highlighted answer is the scripted example for ${esc(P.name)}. Change it to see different outcomes.</p>
+    <button class="btn primary block" id="qGo">Save answer</button></div></div>`;
+  box.querySelectorAll('#qO .opt').forEach(b=>b.onclick=()=>{val=b.dataset.v; box.querySelectorAll('#qO .opt').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+  box.querySelectorAll('#qF .opt').forEach(b=>b.onclick=()=>{firm=b.dataset.f; box.querySelectorAll('#qF .opt').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+  box.querySelector('#qGo').onclick=()=>{Q.save(val,firm); S.queue.shift(); openQuestion();};
+  box.querySelector('#qGo').focus();
+}
+function logC(t){ S.log.push({t:now(), text:'You said: '+t, src:'You said'}); }
+
+function toggleSave(n){
+  const i=S.saved.indexOf(n);
+  if(i>=0){ S.saved.splice(i,1); render(); return; }
+  S.saved.push(n);
+  const q=questionsFor(byNo(n)); S.queue.push(...q);
+  if(S.queue.length) openQuestion(); else render();
+}
+function playScript(){
+  PERSONA[S.kind].script.forEach(n=>{ if(!S.saved.includes(n)){ S.saved.push(n); S.queue.push(...questionsFor(byNo(n))); }});
+  if(S.queue.length) openQuestion(); else render();
+}
+
+/* ---------- assessment (R1–R4) ---------- */
+function assess(pid){
+  const m=membersOf(pid), c=S.c, rows=[], qs=[], A=S.answers[pid]||{};
+  const l=m[0];
+  const allPrices=[...new Set(m.map(x=>x.price_aed))];
+  // Prices within 0.5% of each other are treated as the same asking price (e.g. 949,999 vs 950,000)
+  const prices = (Math.max(...allPrices)-Math.min(...allPrices))/Math.min(...allPrices) < 0.005 ? [Math.max(...allPrices)] : allPrices;
+  // Budget
+  if(S.kind==='renter' && l.price_basis==='holiday_home'){
+    if(A.total==='over') rows.push(row('Budget', c.budget.firm==='firm'?'Conflict':'Potential', `The agent says the extras take the yearly total above ${AED(c.budget.value)}.`, A.src));
+    else if(l.price_aed>c.budget.value) rows.push(row('Budget', c.budget.firm==='firm'?'Conflict':'Potential', `Advertised ${AED(l.price_aed)} is above your ${AED(c.budget.value)}, before extras.`, 'Listing · price'));
+    else { rows.push(row('Budget','Potential',`Advertised ${AED(l.price_aed)} includes bills. The booking fee, VAT, tourism tax and deposit are extra and their amounts aren't stated, so the total may exceed your ${AED(c.budget.value)}.`,'Listing · price + Agent\'s description')); qs.push('What is the full yearly cost, including the booking fee, VAT, tourism tax and deposit?'); }
+  } else {
+    const over=prices.filter(p=>p>c.budget.value);
+    if(over.length===prices.length) { rows.push(row('Budget', c.budget.firm==='firm'?'Conflict':'Potential', `Advertised ${prices.map(AED).join(' / ')} is above your ${AED(c.budget.value)}.`,'Listing · price')); if(c.budget.firm!=='firm') qs.push('Is the price negotiable?'); }
+    else if(over.length) { rows.push(row('Budget','Potential',`Advertised ${prices.map(AED).join(' / ')}. ${over.map(AED).join(' / ')} is above your ${AED(c.budget.value)}; the other price is within it. Which price is current isn't confirmed.`,'Listing · price')); qs.push('Which asking price is current?'); }
+    else rows.push(row('Budget','Fits',`Advertised ${allPrices.map(AED).join(' / ')}${allPrices.length>prices.length?' (effectively the same price)':''}, within your ${AED(c.budget.value)}.`,'Listing · price'));
+  }
+  // Near-identical prices across a cluster: keep both, don't treat as resolved
+  if(allPrices.length>1 && prices.length===1){
+    rows.push({...row('Which price is current','Unknown',`Advertised at ${m.map(x=>AED(x.price_aed)+' (#'+x.audit_no+')').join(', ')}. The difference is negligible for your budget, but which one is current isn't confirmed.`,'Our check · 3 Nov 2026'), nb:true});
+  }
+  // Price conflict across a cluster (R2/R3)
+  if(prices.length>1){
+    if(A.priceAnswers) rows.push({...row('Which price is current','Unknown',A.priceAnswers, A.src), nb:true});
+    else { rows.push(row('Which price is current','Unknown',`This flat is advertised at ${m.map(x=>AED(x.price_aed)+' (#'+x.audit_no+')').join(', ')}. Neither is confirmed.`,'Our check · 3 Nov 2026')); qs.push('Which asking price is current?'); }
+  }
+  // Holiday-home basis (R4)
+  if(l.price_basis==='holiday_home'){
+    if(c.holidayOk==='no') rows.push(row('Type of let','Conflict','Holiday-home let. You asked for standard leases only.','Listing · permit type'));
+    else rows.push(row('Price basis','Fits','Holiday-home let: bills included, extra fees not in the price. Not comparable with standard yearly leases.','Listing · permit type + Agent\'s description'));
+  }
+  if(S.kind==='renter'){
+    // Move-in vs stated available-from
+    if(c.moveIn){
+      const af=l.available_from;
+      if(!af) rows.push(row('Move-in date','Unknown','The listing doesn\'t state an "available from" date.','Unknown'));
+      else if(af<=c.moveIn.date) rows.push(row('Move-in date','Fits',`The listing states available from ${fmtDate(af)}; you need ${fmtDate(c.moveIn.date)}.`,'Listing · available from'));
+      else rows.push(row('Move-in date', c.moveIn.firm==='firm'?'Conflict':'Potential',`The listing states available from ${fmtDate(af)}, after your ${fmtDate(c.moveIn.date)}.`,'Listing · available from'));
+    }
+    // Cheques
+    if(c.cheques){
+      if(A.chequesN!=null){ const okC=A.chequesN>=c.cheques.min; rows.push(row('Cheques', okC?'Fits':(c.cheques.firm==='firm'?'Conflict':'Potential'), okC?A.cheques:`${A.cheques} You need at least ${c.cheques.min}.`, A.src)); }
+      else if(l.cheques===null){ rows.push(row('Cheques','Unknown','The listing doesn\'t state how many cheques are accepted.','Unknown')); qs.push('How many cheques does the owner accept?'); }
+      else if(l.cheques>=c.cheques.min) rows.push(row('Cheques','Fits',`Listing shows ${l.cheques} cheques; you need at least ${c.cheques.min}.`,'Listing · cheques'));
+      else { rows.push(row('Cheques', c.cheques.firm==='firm'?'Conflict':'Potential',`Listing shows ${l.cheques} cheque${l.cheques>1?'s':''}; you need at least ${c.cheques.min}.`,'Listing · cheques')); if(c.cheques.firm!=='firm') qs.push(`The listing shows ${l.cheques} cheque${l.cheques>1?'s':''}. Would the owner accept ${c.cheques.min}?`); }
+    }
+  } else if(c.purpose){
+    // Occupancy
+    if(c.purpose==='invest') rows.push(row('Occupancy','Fits','You\'re investing, so a tenanted flat isn\'t a problem.','You said'));
+    else {
+      const ten=m.map(x=>x.tenancy_from_agent_text);
+      if(A.tenancyEnd){ // month-only answer: A.tenancyEnd = first day of that month, A.tenancyEndNext = first day of the next month
+        const mi=c.moveIn&&c.moveIn.date; let out, note;
+        if(!mi){ out='Potential'; note=' Your move-in date isn\'t set.'; }
+        else if(mi<A.tenancyEnd){ out=c.moveIn.firm==='firm'?'Conflict':'Potential'; note=` You need to move in by ${fmtDate(mi)}.`; }
+        else if(mi<=A.tenancyEndNext){ out='Unknown'; note=` Only the month was given, and your move-in date of ${fmtDate(mi)} is close to it, so the exact end date matters.`; qs.push('What is the exact date the tenancy ends, and when could I take handover?'); }
+        else { out='Potential'; note=` No stated overlap: even if it runs to the end of that month, it ends before your move-in date of ${fmtDate(mi)}. But the exact end date and the handover date aren't confirmed.`; qs.push('When exactly does the tenancy end, and when could I take handover?'); }
+        rows.push(row('Occupancy', out, `${A.occupancy}${note} Agent-reported, not verified.`, A.src)); }
+      else if(A.occupancy){ rows.push(row('Occupancy', A.occupancyOut, A.occupancy, A.src)); }
+      else if(ten.every(t=>t==='vacant')) rows.push(row('Occupancy','Fits','The description says vacant. Stated by the agent, not confirmed.','Agent\'s description'));
+      else if(ten.includes('tenanted')){ rows.push(row('Occupancy','Potential',`The description says tenanted. The tenancy end date isn't stated${c.moveIn?', so it may or may not end before your '+fmtDate(c.moveIn.date):''}.`,'Agent\'s description')); qs.push('When does the current tenancy end?'); }
+      else {
+        const said=m.filter(x=>x.tenancy_from_agent_text==='vacant').map(x=>'#'+x.audit_no), silent=m.filter(x=>x.tenancy_from_agent_text!=='vacant').map(x=>'#'+x.audit_no);
+        rows.push(row('Occupancy','Unknown', said.length?`${said.join(', ')} describes it as vacant; ${silent.join(', ')} ${silent.length>1?"don't":"doesn't"} say. Not carried across listings.`:`The description doesn't say whether it's vacant.`, said.length?'Agent\'s description · mixed':'Unknown'));
+        qs.push(c.moveIn?`Is it vacant, and could I move in by ${fmtDate(c.moveIn.date)}?`:'Is it vacant?');
+      }
+    }
+  }
+  // Availability is always separate
+  rows.push(row('Available now', A.available?'Fits':'Unknown', A.available || 'Listings never confirm current availability. Only the agent can.', A.available?A.src:'Unknown'));
+  // Next step
+  let step;
+  const conflicts=rows.filter(r=>r.out==='Conflict');
+  if(conflicts.length && !S.kept[pid]) step={k:'aside', label:'Set aside', why:conflicts.map(r=>r.text).join(' ')};
+  else if(conflicts.length) step={k:'proceed', label:'Proceed despite conflict', why:'Conflict: '+conflicts.map(r=>r.text).join(' ')+' The conflict still stands.'};
+  else if(rows.some(r=>(r.out==='Potential'||r.out==='Unknown') && r.k!=='Available now' && !r.nb)) step={k:'ask', label:'Ask first', why:'One or two answers could change your decision.'};
+  else step={k:'ready', label:'Ready for viewing enquiry', why:'Nothing in the listing conflicts with what you need. Current availability is still unknown until an agent answers.'};
+  const uniq=[...new Set(qs)].slice(0,2);
+  uniq.push(A.available? 'Could I view it this week?' : 'Is it still available, and could I view it this week?');
+  return {rows, step, questions:uniq.slice(0,3), m};
+}
+function row(k,out,text,src){ return {k,out,text,src}; }
+
+/* ---------- simulated agent replies ---------- */
+function simulateReply(pid, viaScout){
+  const no=membersOf(pid).map(x=>x.audit_no); const t=now(); const src=(viaScout?'Agent says':'You recorded the agent\'s reply')+' · '+t+' · Simulated';
+  const A=S.answers[pid]=S.answers[pid]||{}; let msgs=[];
+  const has=n=>no.includes(n);
+  if(has(5)){ Object.assign(A,{available:'Still available (agent says).',cheques:'The owner accepts 4 cheques (agent says).',chequesN:4,viewing:'Thursday evening',src}); msgs=['Still available. The owner accepts 4 cheques. A viewing is possible Thursday evening.']; }
+  else if(has(7)){ Object.assign(A,{total:'over',src}); msgs=['With the booking fee, VAT, tourism tax and deposit, the yearly total is above AED 80,000.']; }
+  else if(has(12)){ A.noreply=true; msgs=[]; }
+  else if(has(15)){ Object.assign(A,{available:'Still available (agent says).',viewing:'Saturday morning',src}); msgs=['Still available. A viewing is possible Saturday morning.']; }
+  else if(has(18)){ Object.assign(A,{available:'Still available (agent says).',viewing:'Sunday afternoon',src}); msgs=['Still available, vacant. A viewing is possible Sunday afternoon.']; }
+  else if(has(21)){ const tg=S.sent[pid].target||'21'; const others=no.filter(n=>String(n)!==String(tg)).map(n=>'#'+n).join(', ');
+    Object.assign(A,{occupancy:`The agency of #${tg} says it's vacant and can hand over before 1 Feb 2027. ${others} don't state occupancy; this is one agency's statement, not a confirmed fact.`,occupancyOut:'Fits',available:`The agency of #${tg} says it's still available.`,src}); msgs=['Vacant. The seller can hand over before 1 Feb 2027. Still available.']; }
+  else if(has(19)){ const tg=String(S.sent[pid].target||'all'); const asked=tg==='all'?[19,29]:[+tg]; const notAsked=[19,29].filter(n=>!asked.includes(n));
+    const R={19:{price:'AED 960,000',quote:'Still AED 960,000. Vacant.'},29:{price:'AED 1,000,000',quote:'Asking AED 1,000,000. Vacant.'}};
+    if(asked.length===2) Object.assign(A,{priceAnswers:"The agencies' answers still differ: AED 960,000 (agency of #19) and AED 1,000,000 (agency of #29). Scout doesn't choose between them. Settle it with the agency you view with.",occupancy:'Both agencies say vacant (agent says).',occupancyOut:'Fits',available:'Both agencies say still available (agent says).',src});
+    else Object.assign(A,{priceAnswers:`The agency of #${asked[0]} says ${R[asked[0]].price}. #${notAsked[0]}'s agency wasn't asked, so its ${R[notAsked[0]].price} price isn't confirmed. Settle the price with the agency you view with.`,occupancy:`The agency of #${asked[0]} says vacant (agent says). #${notAsked[0]}'s agency wasn't asked.`,occupancyOut:'Fits',available:`The agency of #${asked[0]} says still available (agent says).`,src});
+    msgs=asked.map(n=>`Agency of #${n}: "${R[n].quote}"`); }
+  else if(has(24)){ Object.assign(A,{occupancy:'Tenanted until August 2027 (agent says).',tenancyEnd:'2027-08-01',tenancyEndNext:'2027-09-01',src}); msgs=['The current tenancy runs until August 2027.']; }
+  else { A.noreply=true; }
+  S.sent[pid].replies=msgs.map(x=>({t,text:x}));
+  S.sent[pid].status=msgs.length?'replied':'noreply';
+  const before=S.sent[pid].stepBefore, after=assess(pid).step.label;
+  S.log.push({t, text:`${propTitle(pid)}: ${before} → ${after}${msgs.length?'':' (no reply yet; that doesn\'t mean it\'s unavailable)'}`, src: msgs.length?src:'Simulated'});
+}
+
+/* ---------- views ---------- */
+const IC={
+ bed:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 18V7M3 13h18v5M21 18v-4a3 3 0 0 0-3-3h-7v2"/><circle cx="7" cy="10" r="1.6"/></svg>',
+ area:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 9V4h5M20 15v5h-5M4 4l6 6M20 20l-6-6"/></svg>',
+ cal:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+ cheq:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 14h6"/></svg>',
+ heart:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+ heartF:'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+ spark:'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 5.6L19.5 9l-5.7 1.6L12 16l-1.8-5.4L4.5 9l5.7-1.4z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>',
+ search:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+ chat:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+ ext:'↗'
+};
+function ago(d){ if(!d) return ''; const days=Math.round((Date.UTC(2026,10,3)-Date.parse(d))/864e5); if(days<1) return 'Listed today'; if(days<31) return `Listed ${days} day${days>1?'s':''} ago`; const m=Math.round(days/30.4); return m>=6?'Listed more than 6 months ago':`Listed ${m} month${m>1?'s':''} ago`; }
+function header(){
+  return `<div class="topbar"><div class="brand"><span class="dot">${IC.spark}</span><span>Scout <small>concept prototype</small></span></div>
+  ${S?`<button class="btn sm ghost" id="restart">Switch journey</button>`:''}</div>
+  <p class="proto"><b>Prototype.</b> Real listings from Bloom Towers, JVC, checked 3 Nov 2026 (prices may have changed). <b>Agent messages and replies are simulated.</b> Not a Property Finder product.</p>`;
+}
+function vStart(){
+  return header()+`
+  <div class="pad" style="padding-inline:0"><h1>Is this property worth your next step?</h1>
+  <p class="muted">Scout checks the homes you save against what you actually need, shows where every fact comes from, and asks the agent only when an answer could change your decision.</p></div>
+  <button class="persona" data-start="renter"><span class="tag">Renting</span><h2>Follow Sara</h2><p class="small muted">${PERSONA.renter.intro}</p><span class="btn sm primary" style="align-self:flex-start">Start renter journey →</span></button>
+  <button class="persona" data-start="buyer"><span class="tag">Buying</span><h2>Follow Omar</h2><p class="small muted">${PERSONA.buyer.intro}</p><span class="btn sm primary" style="align-self:flex-start">Start buyer journey →</span></button>
+  ${vScope()}`;
+}
+function vScope(){
+  return `<details class="card"><summary class="pad" style="display:block">What's real, simulated and not built</summary>
+  <div class="pad" style="padding-top:0"><table class="tbl"><tr><th>Real</th><td>30 listings checked on 3 Nov 2026 (15 rent, 15 sale), their fields and links; 2 duplicate clusters confirmed by matching photos; holiday-home price bases.</td></tr>
+  <tr><th>Simulated</th><td>Sending to agents, agent replies and timing, the enquiry channel, web/app sync, notifications.</td></tr>
+  <tr><th>Not built</th><td>Automatic duplicate detection, live availability checks, a Property Finder data connection, real agent messaging, Scout's natural-language chat (questions are scripted), purchase-cost and mortgage maths, off-plan pricing, Arabic, an agent-side view.</td></tr></table>
+  <p class="small muted">Scout never labels a listing "fake". In our check of 30 Bloom Towers listings, none met that bar.</p></div></details>`;
+}
+function vSearch(){
+  const P=PERSONA[S.kind];
+  const list=L.filter(l=>l.offering===P.offering && l.price_aed<=P.budget && (!P.furnishedOnly || l.furnished==='YES'));
+  const props=savedProps();
+  return header()+`
+  <div><h2>1 bed in Bloom Towers, JVC</h2><p class="small muted">${P.offering==='rent'?'Rent · Furnished':'Buy'} · Up to ${AED(P.budget)}${P.offering==='rent'?' yearly':''} · ${list.length} properties</p></div>
+  <button class="scout" id="toSaved"><span class="ic">${IC.spark}</span><span><b>Worth pursuing?</b><span class="s">${props.length?`Check your ${S.saved.length} saved listing${S.saved.length>1?'s':''} against what you need`:'Save homes and Scout checks them against what you need'}</span></span></button>
+  <div class="card pad" style="background:var(--primary-soft);border-color:transparent"><p class="small"><b>Try it:</b> save the ${P.script.length} listings ${P.name} likes. Scout asks a question only when one of them makes it matter.</p>
+  <button class="btn sm primary" id="play" style="align-self:flex-start">Save ${P.name}'s ${P.script.length} listings</button></div>
+  ${list.map(cardSearch).join('')}`;
+}
+function cardSearch(l){
+  const saved=S.saved.includes(l.audit_no); const chips=[];
+  if(l.duplicate_cluster){ const k=L.filter(x=>x.duplicate_cluster===l.duplicate_cluster).length-1; chips.push(`<span class="chip pot">Also listed by ${k} other agenc${k>1?'ies':'y'}</span>`); }
+  if(l.price_basis==='holiday_home') chips.push(`<span class="chip pot">Holiday-home let · bills included</span>`);
+  if(l.audit_no===22||l.audit_no===23) chips.push(`<span class="chip">Photos also used on another listing</span>`);
+  const badges=[]; if(l.verified) badges.push('<span class="badge v">✓ Verified</span>'); if(l.placement!=='standard') badges.push(`<span class="badge">${l.placement[0].toUpperCase()+l.placement.slice(1)}</span>`);
+  return `<article class="card"><div class="photo"><div class="badges">${badges.join('')}</div><span class="tw">${esc(l.tower.replace('Bloom Towers ','Tower '))}</span><span class="note">#${l.audit_no} · photos on PF</span>
+  <button class="heart" aria-pressed="${saved}" aria-label="${saved?'Remove':'Save'} listing #${l.audit_no}" data-save="${l.audit_no}">${saved?IC.heartF:IC.heart}</button></div>
+  <div class="pad"><p class="xs muted">${ago(l.listed_date)}</p>
+  <div class="price">${AED(l.price_aed)} ${l.offering==='rent'?'<small>yearly</small>':''}</div>
+  <div class="facts"><span>${IC.bed} 1 bed</span><span>${IC.area} ${l.size_sqft} sqft</span>${l.offering==='rent'?`<span>${IC.cheq} ${l.cheques?l.cheques+' cheque'+(l.cheques>1?'s':''):'Cheques not stated'}</span>`:''}<span>${l.furnished==='YES'?'Furnished':'Unfurnished'}</span></div>
+  <p class="small muted">${esc(l.tower)}, JVC, Dubai · ${esc(l.agency)}</p>
+  ${chips.length?`<div class="row">${chips.join('')}</div>`:''}
+  <a class="small" href="${esc(l.url)}" target="_blank" rel="noopener">View listing on Property Finder ${IC.ext}</a></div></article>`;
+}
+function vSaved(){
+  const props=savedProps();
+  if(!props.length) return header()+`<div class="card pad"><h2>Worth pursuing?</h2><p class="muted">Nothing saved yet. Save homes in Search and Scout will check them against what you need.</p><button class="btn primary" data-tab="search">Go to search</button></div>`;
+  const res=props.map(pid=>({pid,...assess(pid)}));
+  const cnt=k=>res.filter(r=>r.step.k===k).length;
+  return header()+`
+  <div><h1>Worth pursuing?</h1><p class="small muted">${S.saved.length} saved listing${S.saved.length>1?'s':''} · ${props.length} propert${props.length>1?'ies':'y'}${S.saved.length>props.length?' after grouping duplicates':''}</p></div>
+  <div class="hero"><span class="eyebrow">Scout · your shortlist</span>
+  <h2>${cnt('ready')} ready for a viewing enquiry, ${cnt('ask')} need${cnt('ask')===1?'s':''} a question first${cnt('aside')?`, ${cnt('aside')} set aside`:''}${cnt('proceed')?`, ${cnt('proceed')} proceeding despite a conflict`:''}.</h2>
+  <div class="summary flow"><div><span class="n">${S.saved.length}</span><span class="xs">listings saved</span></div><span class="arr" aria-hidden="true">→</span>
+  <div><span class="n">${props.length}</span><span class="xs">${S.saved.length>props.length?'homes, copies grouped':'homes'}</span></div><span class="arr" aria-hidden="true">→</span>
+  <div class="with"><span class="n">${cnt('ready')}</span><span class="xs">ready to enquire</span></div></div>
+  <p class="xs">Each card below shows what to ask, or why.</p></div>
+  ${vNeeds()}
+  ${vGrouped()}
+  ${res.map(cardSaved).join('')}
+  ${S.log.length?`<details class="card" open><summary class="pad" style="display:block">What changed, and why</summary><div class="pad" style="padding-top:0"><div style="display:flex;flex-direction:column;gap:8px">${S.log.slice().reverse().map(e=>`<div class="row" style="align-items:flex-start;flex-wrap:nowrap"><span class="tile">${/→/.test(e.text)?'↻':/You said/.test(e.text)?'✎':'✉'}</span><div style="min-width:0"><p class="small">${esc(e.text)}</p><div class="src ${/Simulated/.test(e.src)?'sim':''}">${esc(e.src)} · ${e.t}</div></div></div>`).join('')}</div></div></details>`:''}
+  <p class="xs muted">In the full product, this lives in Saved on web and app, and agent replies arrive as notifications.</p>
+  ${vScope()}`;
+}
+function vGrouped(){
+  const off=PERSONA[S.kind].offering, inOff=L.filter(l=>l.offering===off);
+  const cl=[...new Set(inOff.filter(l=>l.duplicate_cluster).map(l=>l.duplicate_cluster))];
+  const hh=inOff.filter(l=>l.price_basis==='holiday_home'), ph=inOff.filter(l=>l.audit_no===22||l.audit_no===23);
+  const items=[];
+  cl.forEach(k=>{const m=L.filter(l=>l.duplicate_cluster===k); items.push(`<li><b>Grouped, cluster ${k}:</b> ${m.map(x=>`#${x.audit_no} · ${esc(x.agency)} · ${AED(x.price_aed)}`).join('; ')}. Same photos, tower and size, so one flat. Every listing and price is kept.</li>`);});
+  if(!cl.length) items.push(`<li><b>Grouped:</b> no duplicate copies were confirmed among the ${inOff.length} ${off} listings checked.</li>`);
+  if(hh.length) items.push(`<li><b>Labelled:</b> ${hh.map(x=>'#'+x.audit_no).join(', ')} ${hh.length>1?'are holiday-home lets':'is a holiday-home let'} (DTCM permit). The yearly price includes bills and excludes extra fees, so it isn't comparable with a standard lease. Labelled, not removed.</li>`);
+  if(ph.length) items.push(`<li><b>Flagged to check:</b> ${ph.map(x=>'#'+x.audit_no).join(' and ')} use the same photos at different sizes, so at least one shows a different flat. Not proven misleading; labelled, not removed.</li>`);
+  return `<details class="card"><summary class="pad" style="display:block">Grouped and labelled, not removed · 0 confirmed misleading</summary>
+  <div class="pad" style="padding-top:0"><p class="small">Our check of 30 listings on 3 Nov 2026 found <b>no confirmed misleading listings</b>, so Scout hasn't removed any listing as fake.</p>
+  <ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px">${items.join('')}</ul>
+  <p class="xs muted">Duplicates were matched by hand for this prototype, not detected automatically.</p></div></details>`;
+}
+function vNeeds(){
+  const c=S.c; const items=[];
+  items.push(`Budget ${AED(c.budget.value)} · ${c.budget.firm||'not asked yet'}`);
+  if(c.moveIn) items.push(`Move in by ${fmtDate(c.moveIn.date)} · ${c.moveIn.firm}`);
+  if(c.cheques) items.push(`At least ${c.cheques.min} cheques · ${c.cheques.firm}`);
+  if(c.holidayOk) items.push(`Holiday-home lets: ${c.holidayOk==='yes'?'OK if the total fits':'no'}`);
+  if(c.purpose) items.push(c.purpose==='live'?'Buying to live in':'Buying to invest');
+  return `<details class="card"><summary class="pad" style="display:block">What you told Scout · ${items.length}</summary>
+  <div class="pad" style="padding-top:0"><ul class="small" style="margin:0;padding-left:18px">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>
+  <div class="row">${c.cheques?`<button class="btn sm soft" data-flip="cheques">Make cheques ${c.cheques.firm==='firm'?'flexible':'firm'}</button>`:''}
+  ${c.purpose?`<button class="btn sm soft" data-flip="purpose">Switch to ${c.purpose==='live'?'investing':'living in'}</button>`:''}
+  ${c.budget.firm?`<button class="btn sm soft" data-flip="budget">Make budget ${c.budget.firm==='firm'?'flexible':'firm'}</button>`:''}</div>
+  <p class="xs muted">Change an answer and every next step updates.</p></div></details>`;
+}
+function cardSaved(r){
+  const {pid,step,rows,m,questions}=r; const sent=S.sent[pid];
+  const cluster=pid[0]==='C'; const l=m[0];
+  const priceTxt=[...new Set(m.map(x=>x.price_aed))].map(AED).join(' / ');
+  return `<article class="card" id="p-${pid}"><div class="pad">
+  <div class="row between"><span class="status ${step.k}">${step.label}</span><span class="xs muted">${cluster?'Listed '+m.length+' times':'#'+l.audit_no} · ${l.offering==='rent'?'Rent':'Sale'}</span></div>
+  <div><h3>${cluster?'One flat, '+m.length+' listings':esc(l.tower)+' · '+l.size_sqft+' sqft'}</h3><p class="small muted">${cluster?esc(l.tower)+' · '+l.size_sqft+' sqft · ':''}${priceTxt}${l.offering==='rent'?' yearly':''}</p></div>
+  ${cluster?`<div class="cluster"><p class="xs"><b>Same flat, listed by ${m.length} agencies.</b> Same photos, tower and size (our check, 3 Nov 2026).</p>
+  ${m.map(x=>`<div class="ln"><span>#${x.audit_no} · ${esc(x.agency)}</span><b>${AED(x.price_aed)}</b></div>`).join('')}</div>`:''}
+  ${step.k!=='aside'&&!sent?`<div><p class="xs muted" style="margin-bottom:4px">${step.k==='ready'?'Scout would ask':'Questions that could change your decision'}</p><ol class="qlist">${questions.map(q=>`<li>${esc(q)}</li>`).join('')}</ol></div>`:''}
+  ${step.k!=='ask'?`<p class="why">${esc(step.why)}</p>`:''}
+  ${step.k==='proceed'?`<p class="xs"><b>Your decision:</b> proceed despite the conflict · <span class="src">You said · ${esc(S.kept[pid])}</span></p>`:''}
+  ${sent?`<span class="chip sim" style="align-self:flex-start">${sent.status==='replied'?'Reply received · simulated':sent.status==='noreply'?"No reply yet · doesn't mean unavailable":sent.via==='self'?'You sent it yourself':'Sent via Scout · simulated'}</span>`:''}
+  <details><summary>Why · ${rows.length} checks with sources</summary><div>${rows.map(x=>`<div class="crow"><span class="out ${x.out}">${x.out==='Potential'?'Potential':x.out}</span><div><p class="small"><b>${esc(x.k)}.</b> ${esc(x.text)}</p><div class="src ${/Simulated/.test(x.src)?'sim':''}">${esc(x.src)}</div></div></div>`).join('')}</div></details>
+  <div class="row">${step.k==='aside'?`<button class="btn sm" data-keep="${pid}">Keep anyway</button>`:`<button class="btn sm primary" data-ask="${pid}">${step.k==='ready'?'Send viewing enquiry':'Ask these questions'}</button>`}
+  <button class="btn sm ghost" data-detail="${pid}">All facts</button></div></div></article>`;
+}
+function vDetail(){
+  const pid=S.detail, r=assess(pid), m=r.m;
+  const groups={'Listing (structured fields)':[], "Agent's description (stated, not confirmed)":[], 'Our check · 3 Nov 2026':[], 'Agent says · simulated':[], 'Unknown':[]};
+  m.forEach(l=>{
+    groups['Listing (structured fields)'].push(`#${l.audit_no}: ${AED(l.price_aed)}${l.offering==='rent'?' yearly':''} · ${l.size_sqft} sqft · ${l.furnished==='YES'?'furnished':'unfurnished'}${l.offering==='rent'?' · cheques: '+(l.cheques??'not stated')+' · available from '+(fmtDate(l.available_from)||'not stated'):''} · ${l.verified?'Verified':'Not verified'} · ${l.placement} placement · listed ${fmtDate(l.listed_date)} · ${esc(l.agency)}`);
+    if(l.tenancy_from_agent_text) groups["Agent's description (stated, not confirmed)"].push(`#${l.audit_no}: occupancy ${l.tenancy_from_agent_text==='unknown'?'not stated':l.tenancy_from_agent_text}`);
+    if(l.note) groups["Agent's description (stated, not confirmed)"].push(`#${l.audit_no}: ${esc(l.note)}`);
+  });
+  if(pid[0]==='C') groups['Our check · 3 Nov 2026'].push(`Same photos across ${m.map(x=>'#'+x.audit_no).join(', ')}: one flat, ${m.length} listings.`);
+  const A=S.answers[pid]; if(A){ ['available','cheques','occupancy','viewing'].forEach(k=>A[k]&&groups['Agent says · simulated'].push((k==='viewing'?'Viewing possible: ':'')+esc(A[k]))); if(A.total) groups['Agent says · simulated'].push('Total with extras is above AED 80,000.'); if(A.priceAnswers) groups['Agent says · simulated'].push(esc(A.priceAnswers)); }
+  r.rows.filter(x=>x.out==='Unknown').forEach(x=>groups['Unknown'].push(esc(x.k+': '+x.text)));
+  return header()+`<button class="btn sm ghost" style="align-self:flex-start" data-tab="saved">← Worth pursuing?</button>
+  <div><h2>${esc(propTitle(pid))}</h2><p class="small muted">Every fact, grouped by where it comes from</p></div>
+  ${Object.entries(groups).filter(([k,v])=>v.length).map(([k,v])=>`<div class="card pad"><p class="mono ${/simulated/.test(k)?'src sim':'muted'}">${esc(k.toUpperCase())}</p><ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">${v.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}
+  <div class="row">${m.map(l=>`<a class="small" href="${esc(l.url)}" target="_blank" rel="noopener">#${l.audit_no} on Property Finder ${IC.ext}</a>`).join('')}</div>
+  <button class="btn primary block" data-ask="${pid}">Ask with my questions</button>`;
+}
+function vAsk(){
+  const pid=S.ask, r=assess(pid), m=r.m, P=PERSONA[S.kind];
+  const target = S.askTarget ?? (pid==='CB' ? 'all' : String(m[0].audit_no));
+  const l = target==='all'? m[0] : byNo(+target);
+  const qs=r.questions;
+  const gen=`Hi, I'm interested in the 1-bed in ${l.tower}, ${l.size_sqft} sqft, ${AED(l.price_aed)} (Property Finder listing ${l.listing_id}). Before I arrange a viewing:\n${qs.map((q,i)=>`${i+1}) ${q}`).join('\n')}\n\nThanks, ${P.name}`;
+  if(!S.draftEdited) S.draft=gen;
+  const text=S.draft; S.curTarget=target;
+  const via=S.askVia||'self';
+  return header()+`<button class="btn sm ghost" style="align-self:flex-start" data-tab="saved">← Worth pursuing?</button>
+  <div><h2>${r.step.k==='ready'?'Viewing enquiry':'Ask before you go further'}</h2><p class="small muted">${esc(propTitle(pid))} · only questions that could change your decision, up to 3</p></div>
+  ${m.length>1?`<div class="card pad"><p class="small"><b>Who to ask</b></p><div class="opts">${pid==='CB'?`<button class="opt" data-target="all" aria-pressed="${target==='all'}">Both agencies, same questions</button>`:''}${m.map(x=>`<button class="opt" data-target="${x.audit_no}" aria-pressed="${target===String(x.audit_no)}">#${x.audit_no} · ${esc(x.agency)}</button>`).join('')}</div>
+  <p class="xs muted">${pid==='CB'?'The advertised prices differ, so asking both is the only way to compare answers.':'One flat, so one agency is enough. You choose which.'}</p></div>`:''}
+  <div class="card pad"><label class="small" for="draft"><b>Your message</b> · edit freely</label><textarea id="draft">${esc(text)}</textarea>${S.draftEdited?`<p class="xs muted">Your edits are kept when you change the options. If you changed who to ask, check the listing details in your message. <button class="btn sm ghost" id="resetDraft">Use Scout's draft again</button></p>`:''}</div>
+  <div class="card pad"><p class="small"><b>How should it be sent?</b></p>
+  <div class="opts"><button class="opt" data-via="self" aria-pressed="${via==='self'}">Send it myself · default</button><button class="opt" data-via="scout" aria-pressed="${via==='scout'}">Let Scout ask for me · simulated</button></div>
+  ${via==='self'?`<p class="small muted">Copy the message or open WhatsApp with the text filled in. No number is attached in this prototype, so you pick the recipient. Scout can't see the reply in WhatsApp, so you add it here when it arrives.</p>
+  <div class="row"><button class="btn" id="copy">Copy message</button><a class="btn" id="wa" href="https://wa.me/?text=${encodeURIComponent(text)}" target="_blank" rel="noopener">Open WhatsApp ${IC.ext}</a></div>
+  <button class="btn primary block" id="sendSelf">I've sent it · track the reply here</button>`:
+  `<div class="msg"><p class="small"><b>What Scout shares</b></p><p class="small">Your first name (${P.name}), the questions above, and: ${shareList().join(', ')}. No phone number or email until an agent replies and you choose to continue.</p>
+  <p class="xs muted">Sent through the listing's normal Property Finder enquiry channel, so the agent still receives it as a lead. <b>Simulated: nothing is actually sent.</b></p></div>
+  <button class="btn primary block" id="sendScout">Send through Scout · simulated</button>`}</div>`;
+}
+function shareList(){ const c=S.c, out=[]; if(c.moveIn) out.push('move-in by '+fmtDate(c.moveIn.date)); if(c.cheques) out.push('at least '+c.cheques.min+' cheques'); if(S.kind==='buyer'&&c.purpose) out.push(c.purpose==='live'?'buying to live in':'buying to invest'); return out.length?out:['nothing else']; }
+function vAnswers(){
+  const ids=Object.keys(S.sent);
+  return header()+`<div><h1>Answers</h1><p class="small muted">Every reply keeps who said it and when. An agent's answer isn't independent verification.</p></div>
+  ${ids.length?ids.map(pid=>{const s=S.sent[pid]; return `<div class="card pad"><div class="row between"><h3>${esc(propTitle(pid))}</h3><span class="chip sim">Simulated</span></div>
+  <div class="msg"><p class="mono muted">${s.via==='self'?'YOU SENT':'SENT VIA SCOUT'} · ${s.t}${s.target&&s.target!=='all'?' · TO AGENCY OF #'+s.target:s.target==='all'?' · TO BOTH AGENCIES':''}</p><p class="small" style="white-space:pre-wrap">${esc(s.text)}</p></div>
+  ${s.status==='waiting'?`<button class="btn sm primary" data-reply="${pid}">${s.via==='self'?"Add the agent's reply · simulated example":"Show the agent's reply · simulated"}</button>`:''}
+  ${(s.replies||[]).map(x=>`<div class="msg agent"><p class="mono src sim">${s.via==='self'?"YOU RECORDED THE AGENT'S REPLY":'AGENT SAYS'} · ${x.t} · SIMULATED</p><p class="small">${esc(x.text)}</p></div>`).join('')}
+  ${s.status==='noreply'?`<p class="small muted">No reply yet. That doesn't mean it's unavailable.</p>`:''}
+  ${s.status!=='waiting'?`<button class="btn sm soft" data-goto="${pid}">See the updated next step</button>`:''}</div>`;}).join('')
+  :`<div class="card pad"><p class="muted">No questions sent yet. Open "Worth pursuing?" and tap "Ask these questions" on a property.</p></div>`}`;
+}
+
+/* ---------- render & events ---------- */
+function render(){
+  const app=document.getElementById('app'); const tabs=document.getElementById('tabs');
+  if(!S){ app.innerHTML=vStart(); tabs.hidden=true; }
+  else { tabs.hidden=false;
+    app.innerHTML = S.view==='search'?vSearch(): S.view==='saved'?vSaved(): S.view==='detail'?vDetail(): S.view==='ask'?vAsk(): vAnswers();
+    tabs.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-current', (t.dataset.tab===S.view || (S.view==='detail'||S.view==='ask')&&t.dataset.tab==='saved')?'page':'false'));
+  }
+  bind();
+}
+function go(v){ S.view=v; render(); window.scrollTo({top:0}); }
+function bind(){
+  const app=document.getElementById('app');
+  app.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>{reset(b.dataset.start); render();});
+  const rs=document.getElementById('restart'); if(rs) rs.onclick=()=>{S=null; document.getElementById('sheet').innerHTML=''; render();};
+  app.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>toggleSave(+b.dataset.save));
+  const pl=document.getElementById('play'); if(pl) pl.onclick=playScript;
+  const ts=document.getElementById('toSaved'); if(ts) ts.onclick=()=>go('saved');
+  app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>go(b.dataset.tab));
+  app.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>{S.detail=b.dataset.detail; go('detail');});
+  app.querySelectorAll('[data-ask]').forEach(b=>b.onclick=()=>{S.ask=b.dataset.ask; S.askTarget=null; S.askVia='self'; S.draft=null; S.draftEdited=false; go('ask');});
+  app.querySelectorAll('[data-keep]').forEach(b=>b.onclick=()=>{S.kept[b.dataset.keep]=now(); S.log.push({t:now(),text:propTitle(b.dataset.keep)+': proceed despite the conflict (your decision; the conflict still stands)',src:'You said'}); render();});
+  app.querySelectorAll('[data-flip]').forEach(b=>b.onclick=()=>{const k=b.dataset.flip,c=S.c;
+    if(k==='cheques') c.cheques.firm=c.cheques.firm==='firm'?'flexible':'firm';
+    if(k==='purpose') c.purpose=c.purpose==='live'?'invest':'live';
+    if(k==='budget') c.budget.firm=c.budget.firm==='firm'?'flexible':'firm';
+    logC(k==='purpose'?(c.purpose==='live'?'Buying to live in':'Buying to invest'):k==='cheques'?'Cheques now '+c.cheques.firm:'Budget now '+c.budget.firm);
+    render();});
+  app.querySelectorAll('[data-target]').forEach(b=>b.onclick=()=>{S.askTarget=b.dataset.target; render();});
+  app.querySelectorAll('[data-via]').forEach(b=>b.onclick=()=>{S.askVia=b.dataset.via; render();});
+  const rd=document.getElementById('resetDraft'); if(rd) rd.onclick=()=>{S.draftEdited=false; render();};
+  const ta=document.getElementById('draft'); if(ta) ta.oninput=()=>{S.draft=ta.value; S.draftEdited=true; const wa=document.getElementById('wa'); if(wa) wa.href='https://wa.me/?text='+encodeURIComponent(ta.value);};
+  const cp=document.getElementById('copy'); if(cp) cp.onclick=()=>{navigator.clipboard?.writeText(S.draft).then(()=>{cp.textContent='Copied';},()=>{ta.select(); cp.textContent='Selected. Copy it now';}) ?? (ta.select());};
+  const send=(via)=>{const pid=S.ask; S.sent[pid]={via,t:now(),text:S.draft,status:'waiting',target:S.curTarget,stepBefore:assess(pid).step.label};
+    S.log.push({t:now(),text:`${propTitle(pid)}: questions sent ${via==='self'?'by you':'via Scout'}`,src:'Simulated'}); go('answers');};
+  const ss=document.getElementById('sendSelf'); if(ss) ss.onclick=()=>send('self');
+  const sc=document.getElementById('sendScout'); if(sc) sc.onclick=()=>send('scout');
+  app.querySelectorAll('[data-reply]').forEach(b=>b.onclick=()=>{simulateReply(b.dataset.reply, S.sent[b.dataset.reply].via==='scout'); render();});
+  app.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>{go('saved'); setTimeout(()=>{const el=document.getElementById('p-'+b.dataset.goto); if(el){el.scrollIntoView({block:'start'}); el.classList.add('hl');}},50);});
+}
+document.getElementById('tabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>go(t.dataset.tab));
+render();
+</script>
