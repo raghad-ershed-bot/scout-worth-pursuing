@@ -56,3 +56,6 @@ Two final touches: replies now read back as short structured fields (for example
 I also added a guided test (the start screen and the "?" in the header) so someone who hasn't read the brief knows what to try and what to look for.
 
 No rule, data or outcome changed. Every test suite was re-run, including a new `tests/presentation-v2.js`.
+
+## 4 Nov, 00:55 · Post-submission display fix
+On a real iPhone, the GitHub Pages version rendered at desktop width because the page had no mobile viewport tag. The claude.ai version adds one automatically, which hid the problem, and the tests used a narrow browser window rather than phone emulation. I added the doctype and viewport tag only. No content, rule or outcome changed, and the tests were re-run on an emulated iPhone 13.
