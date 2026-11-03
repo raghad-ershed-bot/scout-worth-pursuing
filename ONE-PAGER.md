@@ -29,7 +29,7 @@ It sits inside search, at the moments of intent, not on the homepage:
 The shortlist, answers and agent threads belong to the account, so a reply arrives as an app notification and in the same thread on web.
 
 ## 4. Why use it, and when not to
-Use it to stop messaging three agencies about one flat, to ask the question that decides it, and to see who said what. **Just call the agent** when you've found the one and speed matters, when you're negotiating, or when the deal is complex. "Send it myself" is the default.
+Use it to stop messaging three agencies about one flat, to ask the question that decides it, and to see who said what. **Just call the agent** when you've found the one and speed matters, when you're negotiating, or when the deal is complex. You approve every send: one tap lets Scout ask, or you send it yourself.
 
 ## 5. Agents and revenue
 
