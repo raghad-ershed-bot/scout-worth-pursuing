@@ -62,4 +62,4 @@ Use it to stop messaging three agencies about one flat, to ask the question that
 | 5 | Continuing across devices; the listing-page entry | Placement | **PF connection:** accounts and notifications. Listing-page entry cut at the freeze |
 | 6 | Full lease cost, price outliers, a flexible budget that widens search | Real cost; "confirm the size", not "bargain" | **Data:** rarely listed. The flexible-budget gap is disclosed |
 
-*1 and 2 are the product, 3 is correctness, 4 to 6 complete it.* · [Prototype](#) · [Repo](#) · [Supporting files](#) · [AI-LOG](AI-LOG.md) · [Decision log](docs/DECISION-LOG.md)
+*1 and 2 are the product, 3 is correctness, 4 to 6 complete it.* · [Prototype](https://raghad-ershed-bot.github.io/scout-worth-pursuing/) · [Repo](https://github.com/raghad-ershed-bot/scout-worth-pursuing) · [Supporting files](#) · [AI-LOG](AI-LOG.md) · [Decision log](docs/DECISION-LOG.md)

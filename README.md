@@ -4,7 +4,7 @@ A mobile-first, clickable prototype for Property Finder's Scout. For the homes a
 
 **Not a Property Finder product. Agent messages and replies are simulated.**
 
-- **Live prototype:** [link] (open it on a phone, or narrow your browser to about 400px)
+- **Live prototype:** [https://raghad-ershed-bot.github.io/scout-worth-pursuing/](https://raghad-ershed-bot.github.io/scout-worth-pursuing/) (open it on a phone, or narrow your browser to about 400px)
 - **Start with:** [ONE-PAGER.md](ONE-PAGER.md)
 
 ## What's here
