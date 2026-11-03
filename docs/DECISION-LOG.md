@@ -42,3 +42,13 @@ I wasn't convinced the prototype showed the idea, so I asked for a blunt review 
 - plain labels ("Listed 3 times")
 
 Every outcome was re-tested and is unchanged.
+
+## 20:00 · Pre-submission review (presentation and flow; rules unchanged)
+I reviewed the prototype end to end the way a PF leadership room would, and benchmarked it against Better.com's Betsy (AI does the work, escalates when unsure, every interaction visible to a human) and my own earlier agent-workflow designs. Five gaps would have been challenged, so I closed them:
+- **"Where's the AI?"** Listing pages now show *Scout read the description* (stated, not confirmed), and every reply shows *Scout read the reply* at the precision given. Both are labelled honestly: extracted by hand, or simulated.
+- **"The searcher still does the work."** One approval, *Let Scout ask N agents for me*, sends only each card's questions (simulated) and brings the answers back. "Send it myself" stays available on every card.
+- **"What does the agent see?"** The Scout route now previews the PF enquiry exactly as the agent would receive it.
+- **No "aha".** The top of "Worth pursuing?" is now a Scout brief: what each agent said, and what changed.
+- **"It doesn't look like it's inside search."** Search cards open Scout's check in-app. Before you save, it says it hasn't checked the home against your needs yet.
+
+No rule, data or outcome changed. Every test suite was re-run, including a new `tests/presentation-v2.js`.

@@ -113,6 +113,15 @@ textarea{width:100%;min-height:170px;border:1px solid var(--line);border-radius:
 .summary .with{background:var(--primary-soft)} .summary .with .n{color:var(--primary)}
 .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:6px;align-items:stretch}
 .flow .arr{align-self:center;opacity:.6;font-size:14px}
+.brief{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.brief li{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;line-height:1.45}
+.bdot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:none}
+.bdot.ready{background:#4ade80}.bdot.ask{background:#fbbf24}.bdot.aside,.bdot.proceed{background:#f87171}
+.btn.invert{background:var(--surface);color:var(--primary);border-color:transparent}
+.extract{border:1px dashed var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.extract ul{margin:0;padding-left:18px}
+.openline{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.openline .go{font-weight:600;color:var(--primary);font-size:13px}
 .cluster{background:var(--bg);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
 .cluster .ln{display:flex;justify-content:space-between;gap:8px;font-size:13px}
 .persona{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px}
@@ -396,26 +405,39 @@ function cardSearch(l){
   const badges=[]; if(l.verified) badges.push('<span class="badge v">✓ Verified</span>'); if(l.placement!=='standard') badges.push(`<span class="badge">${l.placement[0].toUpperCase()+l.placement.slice(1)}</span>`);
   return `<article class="card"><div class="photo"><div class="badges">${badges.join('')}</div><span class="tw">${esc(l.tower.replace('Bloom Towers ','Tower '))}</span><span class="note">#${l.audit_no} · photos on PF</span>
   <button class="heart" aria-pressed="${saved}" aria-label="${saved?'Remove':'Save'} listing #${l.audit_no}" data-save="${l.audit_no}">${saved?IC.heartF:IC.heart}</button></div>
-  <div class="pad"><p class="xs muted">${ago(l.listed_date)}</p>
+  <div class="pad" data-open="${propOf(l)}" role="button" tabindex="0" style="cursor:pointer"><p class="xs muted">${ago(l.listed_date)}</p>
   <div class="price">${AED(l.price_aed)} ${l.offering==='rent'?'<small>yearly</small>':''}</div>
   <div class="facts"><span>${IC.bed} 1 bed</span><span>${IC.area} ${l.size_sqft} sqft</span>${l.offering==='rent'?`<span>${IC.cheq} ${l.cheques?l.cheques+' cheque'+(l.cheques>1?'s':''):'Cheques not stated'}</span>`:''}<span>${l.furnished==='YES'?'Furnished':'Unfurnished'}</span></div>
   <p class="small muted">${esc(l.tower)}, JVC, Dubai · ${esc(l.agency)}</p>
   ${chips.length?`<div class="row">${chips.join('')}</div>`:''}
-  <a class="small" href="${esc(l.url)}" target="_blank" rel="noopener">View listing on Property Finder ${IC.ext}</a></div></article>`;
+  <div class="openline"><span class="go">Scout's check →</span><a class="small" href="${esc(l.url)}" target="_blank" rel="noopener">On Property Finder ${IC.ext}</a></div></div></article>`;
 }
 function vSaved(){
   const props=savedProps();
   if(!props.length) return header()+`<div class="card pad"><h2>Worth pursuing?</h2><p class="muted">Nothing saved yet. Save homes in Search and Scout will check them against what you need.</p><button class="btn primary" data-tab="search">Go to search</button></div>`;
   const res=props.map(pid=>({pid,...assess(pid)}));
   const cnt=k=>res.filter(r=>r.step.k===k).length;
+  const short=pid=>pid[0]==='C'?`The flat listed ${membersOf(pid).length} times`:`#${membersOf(pid)[0].audit_no}`;
+  const replied=res.filter(r=>S.sent[r.pid]&&S.sent[r.pid].status!=='waiting');
+  const brief=(replied.length?replied:res).slice(0,4).map(r=>{const s=S.sent[r.pid]; let t;
+    if(s&&s.status==='replied'){const rp=s.replies[0].text; t=`${short(r.pid)}: “${rp.length>70?rp.slice(0,68)+'…':rp}” Now: ${r.step.label}.`;}
+    else if(s&&s.status==='noreply') t=`${short(r.pid)}: no reply yet. That doesn't mean it's gone.`;
+    else if(r.step.k==='ready') t=`${short(r.pid)}: ready for a viewing enquiry.`;
+    else if(r.step.k==='ask') t=`${short(r.pid)}: ask first. “${r.questions[0]}”`;
+    else if(r.step.k==='aside') t=`${short(r.pid)}: set aside. ${r.step.why}`;
+    else t=`${short(r.pid)}: you're proceeding despite a conflict.`;
+    return {k:r.step.k,t};});
+  const pending=res.filter(r=>r.step.k!=='aside'&&!S.sent[r.pid]).length;
+  const headline=replied.length?`${replied.length} agent${replied.length>1?'s':''} answered. Here's what changed.`:`${cnt('ready')} ready for a viewing enquiry, ${cnt('ask')} need${cnt('ask')===1?'s':''} a question first${cnt('aside')?`, ${cnt('aside')} set aside`:''}${cnt('proceed')?`, ${cnt('proceed')} proceeding despite a conflict`:''}.`;
   return header()+`
   <div><h1>Worth pursuing?</h1><p class="small muted">${S.saved.length} saved listing${S.saved.length>1?'s':''} · ${props.length} propert${props.length>1?'ies':'y'}${S.saved.length>props.length?' after grouping duplicates':''}</p></div>
-  <div class="hero"><span class="eyebrow">Scout · your shortlist</span>
-  <h2>${cnt('ready')} ready for a viewing enquiry, ${cnt('ask')} need${cnt('ask')===1?'s':''} a question first${cnt('aside')?`, ${cnt('aside')} set aside`:''}${cnt('proceed')?`, ${cnt('proceed')} proceeding despite a conflict`:''}.</h2>
+  <div class="hero"><span class="eyebrow">Scout · your brief</span>
+  <h2>${headline}</h2>
+  <ul class="brief">${brief.map(b=>`<li><span class="bdot ${b.k}"></span><span>${esc(b.t)}</span></li>`).join('')}</ul>
   <div class="summary flow"><div><span class="n">${S.saved.length}</span><span class="xs">listings saved</span></div><span class="arr" aria-hidden="true">→</span>
   <div><span class="n">${props.length}</span><span class="xs">${S.saved.length>props.length?'homes, copies grouped':'homes'}</span></div><span class="arr" aria-hidden="true">→</span>
   <div class="with"><span class="n">${cnt('ready')}</span><span class="xs">ready to enquire</span></div></div>
-  <p class="xs">Each card below shows what to ask, or why.</p></div>
+  ${pending?`<button class="btn invert block" id="askAll">Approve: let Scout ask ${pending} agent${pending>1?'s':''} for me · simulated</button><p class="xs">Scout sends only the questions on each card below, through PF's normal enquiry channel, and brings the answers back here.</p>`:`<p class="xs">Each card below shows what to ask, or why.</p>`}</div>
   ${vNeeds()}
   ${vGrouped()}
   ${res.map(cardSaved).join('')}
@@ -470,18 +492,21 @@ function cardSaved(r){
 }
 function vDetail(){
   const pid=S.detail, r=assess(pid), m=r.m;
-  const groups={'Listing (structured fields)':[], "Agent's description (stated, not confirmed)":[], 'Our check · 3 Nov 2026':[], 'Agent says · simulated':[], 'Unknown':[]};
+  const DESC="Scout read the description · stated, not confirmed", REP="Scout read the agent's reply · simulated";
+  const groups={'Listing (structured fields)':[], [DESC]:[], 'Our check · 3 Nov 2026':[], [REP]:[], 'Unknown':[]};
   m.forEach(l=>{
     groups['Listing (structured fields)'].push(`#${l.audit_no}: ${AED(l.price_aed)}${l.offering==='rent'?' yearly':''} · ${l.size_sqft} sqft · ${l.furnished==='YES'?'furnished':'unfurnished'}${l.offering==='rent'?' · cheques: '+(l.cheques??'not stated')+' · available from '+(fmtDate(l.available_from)||'not stated'):''} · ${l.verified?'Verified':'Not verified'} · ${l.placement} placement · listed ${fmtDate(l.listed_date)} · ${esc(l.agency)}`);
-    if(l.tenancy_from_agent_text) groups["Agent's description (stated, not confirmed)"].push(`#${l.audit_no}: occupancy ${l.tenancy_from_agent_text==='unknown'?'not stated':l.tenancy_from_agent_text}`);
-    if(l.note) groups["Agent's description (stated, not confirmed)"].push(`#${l.audit_no}: ${esc(l.note)}`);
+    if(l.tenancy_from_agent_text) groups[DESC].push(`#${l.audit_no}: occupancy ${l.tenancy_from_agent_text==='unknown'?'not stated':l.tenancy_from_agent_text}`);
+    if(l.note) groups[DESC].push(`#${l.audit_no}: ${esc(l.note)}`);
   });
   if(pid[0]==='C') groups['Our check · 3 Nov 2026'].push(`Same photos across ${m.map(x=>'#'+x.audit_no).join(', ')}: one flat, ${m.length} listings.`);
-  const A=S.answers[pid]; if(A){ ['available','cheques','occupancy','viewing'].forEach(k=>A[k]&&groups['Agent says · simulated'].push((k==='viewing'?'Viewing possible: ':'')+esc(A[k]))); if(A.total) groups['Agent says · simulated'].push('Total with extras is above AED 80,000.'); if(A.priceAnswers) groups['Agent says · simulated'].push(esc(A.priceAnswers)); }
+  const A=S.answers[pid]; if(A){ ['available','cheques','occupancy','viewing'].forEach(k=>A[k]&&groups[REP].push((k==='viewing'?'Viewing possible: ':'')+esc(A[k]))); if(A.total) groups[REP].push('Total with extras is above AED 80,000.'); if(A.priceAnswers) groups[REP].push(esc(A.priceAnswers)); }
   r.rows.filter(x=>x.out==='Unknown').forEach(x=>groups['Unknown'].push(esc(x.k+': '+x.text)));
-  return header()+`<button class="btn sm ghost" style="align-self:flex-start" data-tab="saved">← Worth pursuing?</button>
-  <div><h2>${esc(propTitle(pid))}</h2><p class="small muted">Every fact, grouped by where it comes from</p></div>
-  ${Object.entries(groups).filter(([k,v])=>v.length).map(([k,v])=>`<div class="card pad"><p class="mono ${/simulated/.test(k)?'src sim':'muted'}">${esc(k.toUpperCase())}</p><ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">${v.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}
+  const from=S.detailFrom||'saved', isSaved=m.some(l=>S.saved.includes(l.audit_no));
+  return header()+`<button class="btn sm ghost" style="align-self:flex-start" data-tab="${from}">← ${from==='search'?'Search':'Worth pursuing?'}</button>
+  <div><h2>${esc(propTitle(pid))}</h2><p class="small muted">Scout's check: every fact, grouped by where it comes from</p></div>
+  ${from==='search'?(isSaved?`<div class="card pad"><div class="row between"><span class="status ${r.step.k}">${r.step.label}</span><span class="xs muted">Saved</span></div><p class="small">${r.step.k==='ask'?'Ask first: '+esc(r.questions[0]):esc(r.step.why)}</p></div>`:`<div class="card pad"><p class="small"><b>Not checked against your needs yet.</b> Save it and Scout asks only what this home makes relevant, then gives it a next step.</p><button class="btn sm primary" style="align-self:flex-start" data-save="${m[0].audit_no}">Save and check</button></div>`):''}
+  ${Object.entries(groups).filter(([k,v])=>v.length).map(([k,v])=>`<div class="card pad"><p class="mono ${/simulated/.test(k)?'src sim':'muted'}">${esc(k.toUpperCase())}</p><ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">${v.map(x=>`<li>${x}</li>`).join('')}</ul>${k===DESC?'<p class="xs muted">In the product, Scout’s AI pulls these claims out of the agent’s text and labels them. Here they were extracted by hand during the audit.</p>':''}</div>`).join('')}
   <div class="row">${m.map(l=>`<a class="small" href="${esc(l.url)}" target="_blank" rel="noopener">#${l.audit_no} on Property Finder ${IC.ext}</a>`).join('')}</div>
   <button class="btn primary block" data-ask="${pid}">Ask with my questions</button>`;
 }
@@ -504,11 +529,23 @@ function vAsk(){
   ${via==='self'?`<p class="small muted">Copy the message or open WhatsApp with the text filled in. No number is attached in this prototype, so you pick the recipient. Scout can't see the reply in WhatsApp, so you add it here when it arrives.</p>
   <div class="row"><button class="btn" id="copy">Copy message</button><a class="btn" id="wa" href="https://wa.me/?text=${encodeURIComponent(text)}" target="_blank" rel="noopener">Open WhatsApp ${IC.ext}</a></div>
   <button class="btn primary block" id="sendSelf">I've sent it · track the reply here</button>`:
-  `<div class="msg"><p class="small"><b>What Scout shares</b></p><p class="small">Your first name (${P.name}), the questions above, and: ${shareList().join(', ')}. No phone number or email until an agent replies and you choose to continue.</p>
-  <p class="xs muted">Sent through the listing's normal Property Finder enquiry channel, so the agent still receives it as a lead. <b>Simulated: nothing is actually sent.</b></p></div>
+  `<div class="msg"><p class="mono muted">WHAT THE AGENT RECEIVES · PF ENQUIRY</p>
+  <p class="small"><b>${esc(l.tower)} · ${l.size_sqft} sqft · ${AED(l.price_aed)} · listing ${l.listing_id}</b></p>
+  <p class="small">From ${P.name} (first name only) · ${shareList().join(' · ')}</p>
+  <ol class="small" style="margin:2px 0 0;padding-left:18px">${qs.map(q=>`<li>${esc(q)}</li>`).join('')}</ol>
+  <p class="xs muted">It lands in the agent's normal PF lead inbox as a qualified enquiry, so it still counts as their lead. No phone number or email is shared until you choose to continue. <b>Simulated: nothing is actually sent.</b></p></div>
   <button class="btn primary block" id="sendScout">Send through Scout · simulated</button>`}</div>`;
 }
 function shareList(){ const c=S.c, out=[]; if(c.moveIn) out.push('move-in by '+fmtDate(c.moveIn.date)); if(c.cheques) out.push('at least '+c.cheques.min+' cheques'); if(S.kind==='buyer'&&c.purpose) out.push(c.purpose==='live'?'buying to live in':'buying to invest'); return out.length?out:['nothing else']; }
+function extracted(pid){ const A=S.answers[pid]||{}, o=[];
+  if(A.priceAnswers) o.push('Price: '+A.priceAnswers);
+  if(A.available) o.push('Availability: '+A.available);
+  if(A.cheques) o.push('Cheques: '+A.cheques);
+  if(A.occupancy) o.push('Occupancy: '+A.occupancy);
+  if(A.tenancyEnd) o.push('Tenancy ends: August 2027 (month only, no exact date or handover date)');
+  if(A.total) o.push('Total yearly cost: above AED 80,000 with extras (exact amount not given)');
+  if(A.viewing) o.push('Viewing offered: '+A.viewing);
+  return o; }
 function vAnswers(){
   const ids=Object.keys(S.sent);
   return header()+`<div><h1>Answers</h1><p class="small muted">Every reply keeps who said it and when. An agent's answer isn't independent verification.</p></div>
@@ -516,6 +553,7 @@ function vAnswers(){
   <div class="msg"><p class="mono muted">${s.via==='self'?'YOU SENT':'SENT VIA SCOUT'} · ${s.t}${s.target&&s.target!=='all'?' · TO AGENCY OF #'+s.target:s.target==='all'?' · TO BOTH AGENCIES':''}</p><p class="small" style="white-space:pre-wrap">${esc(s.text)}</p></div>
   ${s.status==='waiting'?`<button class="btn sm primary" data-reply="${pid}">${s.via==='self'?"Add the agent's reply · simulated example":"Show the agent's reply · simulated"}</button>`:''}
   ${(s.replies||[]).map(x=>`<div class="msg agent"><p class="mono src sim">${s.via==='self'?"YOU RECORDED THE AGENT'S REPLY":'AGENT SAYS'} · ${x.t} · SIMULATED</p><p class="small">${esc(x.text)}</p></div>`).join('')}
+  ${s.status==='replied'?`<div class="extract"><p class="mono muted">SCOUT READ THE REPLY</p><ul class="small">${extracted(pid).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p class="xs muted">Kept exactly as precise as the agent was. In the product this is Scout's AI; here it's simulated.</p></div>`:''}
   ${s.status==='noreply'?`<p class="small muted">No reply yet. That doesn't mean it's unavailable.</p>`:''}
   ${s.status!=='waiting'?`<button class="btn sm soft" data-goto="${pid}">See the updated next step</button>`:''}</div>`;}).join('')
   :`<div class="card pad"><p class="muted">No questions sent yet. Open "Worth pursuing?" and tap "Ask these questions" on a property.</p></div>`}`;
@@ -540,7 +578,15 @@ function bind(){
   const pl=document.getElementById('play'); if(pl) pl.onclick=playScript;
   const ts=document.getElementById('toSaved'); if(ts) ts.onclick=()=>go('saved');
   app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>go(b.dataset.tab));
-  app.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>{S.detail=b.dataset.detail; go('detail');});
+  app.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>{S.detail=b.dataset.detail; S.detailFrom='saved'; go('detail');});
+  app.querySelectorAll('[data-open]').forEach(el=>el.onclick=e=>{ if(e.target.closest('a,button')) return; S.detail=el.dataset.open; S.detailFrom='search'; go('detail');});
+  const aa=document.getElementById('askAll'); if(aa) aa.onclick=()=>{
+    savedProps().map(pid=>({pid,...assess(pid)})).filter(r=>r.step.k!=='aside'&&!S.sent[r.pid]).forEach(r=>{
+      S.ask=r.pid; S.askTarget=null; S.askVia='scout'; S.draftEdited=false; vAsk();
+      S.sent[r.pid]={via:'scout',t:now(),text:S.draft,status:'waiting',target:S.curTarget,stepBefore:r.step.label};
+      S.log.push({t:now(),text:`${propTitle(r.pid)}: questions sent via Scout (you approved)`,src:'Simulated'});
+      simulateReply(r.pid,true); });
+    render(); window.scrollTo({top:0}); };
   app.querySelectorAll('[data-ask]').forEach(b=>b.onclick=()=>{S.ask=b.dataset.ask; S.askTarget=null; S.askVia='self'; S.draft=null; S.draftEdited=false; go('ask');});
   app.querySelectorAll('[data-keep]').forEach(b=>b.onclick=()=>{S.kept[b.dataset.keep]=now(); S.log.push({t:now(),text:propTitle(b.dataset.keep)+': proceed despite the conflict (your decision; the conflict still stands)',src:'You said'}); render();});
   app.querySelectorAll('[data-flip]').forEach(b=>b.onclick=()=>{const k=b.dataset.flip,c=S.c;

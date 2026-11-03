@@ -1,7 +1,7 @@
 # Implementation handoff: frozen state
 
 **Final freeze at 18:55 GST on 3 Nov 2026.** The logic was frozen at 18:30, after two rounds of independent code review and one round of documentation review. (A provisional freeze at 18:20 was reopened once, at 18:24, for the tenancy correction.) A presentation-only pass at 18:45–18:55 changed wording and layout, not logic, and every test was re-run.
-- **Build:** `index.html`, md5 `e7feabe5f4dea0f3c9b9429b88f450b7`. Running `build.py` rebuilds it byte for byte from `src/template.html` and `data/listings.json`.
+- **Build:** `index.html`, md5 `667bc57b0a238799a0a8ec4d41d1edd0` (after the 20:00 pre-submission presentation pass; rules unchanged). Running `build.py` rebuilds it byte for byte from `src/template.html` and `data/listings.json`.
 - **Published:** the same file is in this public repo, served by GitHub Pages at https://raghad-ershed-bot.github.io/scout-worth-pursuing/, and also published as a shared claude.ai artifact (version 7).
 - **Tests:** everything in `tests/` passes on this exact file (md5 above). There are no page errors and no sideways scrolling at 360px or 390px.
 - **History:** the review findings, how each one was tested, and what changed are in `docs/DECISION-LOG.md`.
@@ -67,7 +67,7 @@ Agent replies update the assessment only for the information and the agency they
 - Some tests change the page's state directly where the UI doesn't offer the input (the budget amount, the cheque minimum after a reply, move-in dates outside the three options). The tests mark where they do this.
 
 ## 4. Known limitations (accepted for submission)
-1. **No in-app listing view from search.** Search cards link out to PF. "Ask with my questions" is only reachable from Saved → All facts. This is a spec gap that was left out to keep the build frozen.
+1. **Listing view from search** opens Scout's check in-app (added in the 20:00 pre-submission pass). The full PF listing page itself isn't rebuilt; cards still link out to it.
 2. **Search filters by budget (and furnished, for the renter).** The subtitle shows the filter, but doesn't list what was left out.
 3. **Standard-lease costs aren't modelled:** deposit, agency fee and Ejari only appear as unknowns for holiday-home lets.
 4. **Nothing is saved:** state is lost on reload, and there's no continuity across devices.

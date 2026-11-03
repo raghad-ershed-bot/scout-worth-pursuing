@@ -59,7 +59,7 @@ Use it to stop messaging three agencies about one flat, to ask the question that
 | 2 | AI extraction of claims from descriptions | Sourced facts at scale | **Data and engineering:** the listing feed and an accuracy test. Done by hand here |
 | 3 | An "unavailable" outcome | "It's gone" must never show as available | **Time.** Tested and documented |
 | 4 | Automatic copy detection | Grouping thousands of listings | **Data:** original images; photo matching fails on rentals |
-| 5 | Continuing across devices; the listing-page entry | Placement | **PF connection:** accounts and notifications. Listing-page entry cut at the freeze |
+| 5 | Continuing across devices | Placement | **PF connection:** accounts and notifications |
 | 6 | Full lease cost, price outliers, a flexible budget that widens search | Real cost; "confirm the size", not "bargain" | **Data:** rarely listed. The flexible-budget gap is disclosed |
 
 *1 and 2 are the product, 3 is correctness, 4 to 6 complete it.*
