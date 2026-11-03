@@ -96,6 +96,7 @@ details>summary::after{content:" ▾"} details[open]>summary::after{content:" �
 .tab{border:0;background:transparent;padding:8px 4px 10px;color:var(--muted);font-weight:600;font-size:11.5px;display:flex;flex-direction:column;align-items:center;gap:3px}
 .tab[aria-current="page"]{color:var(--primary)}
 .tab .count{font-size:10px;background:var(--primary);color:var(--primary-ink);border-radius:999px;padding:0 6px;margin-left:2px}
+.howto ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:9px}.howto li{font-size:14px;line-height:1.45}.howto .sheet{max-height:86vh;overflow:auto}
 .sheetwrap{position:fixed;inset:0;background:rgba(14,13,40,.5);display:flex;align-items:flex-end;justify-content:center;z-index:20}
 .sheet{background:var(--surface);width:100%;max-width:440px;border-radius:20px 20px 0 0;padding:20px max(16px,env(safe-area-inset-left,0px)) calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;max-height:88vh;overflow:auto}
 .grab{width:40px;height:4px;border-radius:4px;background:var(--line);align-self:center}
@@ -370,15 +371,35 @@ const IC={
  ext:'↗'
 };
 function ago(d){ if(!d) return ''; const days=Math.round((Date.UTC(2026,10,3)-Date.parse(d))/864e5); if(days<1) return 'Listed today'; if(days<31) return `Listed ${days} day${days>1?'s':''} ago`; const m=Math.round(days/30.4); return m>=6?'Listed more than 6 months ago':`Listed ${m} month${m>1?'s':''} ago`; }
+function openHowto(){ const box=document.getElementById('sheet');
+  box.innerHTML=`<div class="sheetwrap howto" role="dialog" aria-modal="true" aria-labelledby="htT"><div class="sheet"><span class="grab"></span>
+  <p class="mono muted">GUIDED TEST · ABOUT 2 MINUTES</p>
+  <h2 id="htT">What to try, and what to look for</h2>
+  <ol>
+  <li><b>Start as Omar (buyer)</b> and tap <b>Save Omar's 6 listings</b>. Scout asks 3 questions, each only because a saved home makes it matter. Keep the highlighted answers.</li>
+  <li>On <b>Worth pursuing?</b> the 6 listings become <b>4 homes</b>, because two flats were listed more than once. The brief gives each home a next step and the one question that decides it. No scores.</li>
+  <li>Open <b>See what an agent receives</b>, then tap <b>Approve: let Scout ask</b>. Agent replies are simulated.</li>
+  <li>Read the brief again: what each agent said and what changed. <b>#24</b> is set aside, because it's tenanted until August 2027 and Omar needs to move in by 1 Feb.</li>
+  <li>Open <b>Answers</b>. <b>Scout read the reply</b> keeps each answer exactly as precise as the agent gave it ("August 2027 · month only").</li>
+  <li><b>Try a counterexample.</b> In <b>What you told Scout</b>, switch to investing: #24 becomes ready. Or tap <b>Keep anyway</b> on a set-aside home: it shows "Proceed despite conflict", and the conflict stays visible.</li>
+  <li><b>Switch journey to Sara (renter)</b> to see a holiday-home let priced differently from yearly leases, and cheques checked against what she needs.</li>
+  <li>From <b>Search</b>, tap <b>Scout's check</b> on any card to see every fact grouped by source, including what Scout read in the agent's description.</li>
+  </ol>
+  <p class="small muted"><b>Real:</b> 30 Property Finder listings in Bloom Towers, JVC, checked on 3 Nov 2026. <b>Simulated:</b> agent messages and replies. Building images are illustrations.</p>
+  <button class="btn primary block" id="htClose">Got it</button></div></div>`;
+  const close=()=>{box.innerHTML='';}; box.querySelector('#htClose').onclick=close;
+  box.querySelector('.sheetwrap').onclick=e=>{ if(e.target.classList.contains('sheetwrap')) close(); };
+  const sh=box.querySelector('.sheet'); sh.setAttribute('tabindex','-1'); sh.focus({preventScroll:true}); sh.scrollTop=0; }
 function header(){
   return `<div class="topbar"><div class="brand"><span class="dot">${IC.spark}</span><span>Scout <small>concept prototype</small></span></div>
-  ${S?`<button class="btn sm ghost" id="restart">Switch journey</button>`:''}</div>
+  <div class="row" style="gap:2px;flex-wrap:nowrap;flex:none"><button class="btn sm ghost" data-howto aria-label="How to test this prototype" title="How to test" style="padding-inline:11px;min-width:0">?</button>${S?`<button class="btn sm ghost" id="restart" style="padding-inline:10px">Switch journey</button>`:''}</div></div>
   <p class="proto"><b>Prototype.</b> Real listings from Bloom Towers, JVC, checked 3 Nov 2026 (prices may have changed). <b>Agent messages and replies are simulated.</b> Not a Property Finder product.</p>`;
 }
 function vStart(){
   return header()+`
   <div class="pad" style="padding-inline:0"><h1>Is this property worth your next step?</h1>
   <p class="muted">Scout checks the homes you save against what you actually need, shows where every fact comes from, and asks the agent only when an answer could change your decision.</p></div>
+  <button class="btn block" data-howto style="justify-content:space-between"><span><b>New here?</b> How to test it in 2 minutes</span><span>→</span></button>
   <button class="persona" data-start="renter"><span class="tag">Renting</span><h2>Follow Sara</h2><p class="small muted">${PERSONA.renter.intro}</p><span class="btn sm primary" style="align-self:flex-start">Start renter journey →</span></button>
   <button class="persona" data-start="buyer"><span class="tag">Buying</span><h2>Follow Omar</h2><p class="small muted">${PERSONA.buyer.intro}</p><span class="btn sm primary" style="align-self:flex-start">Start buyer journey →</span></button>
   ${vScope()}`;
@@ -596,6 +617,7 @@ function go(v){ S.view=v; render(); window.scrollTo({top:0}); }
 function bind(){
   const app=document.getElementById('app');
   app.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>{reset(b.dataset.start); render();});
+  app.querySelectorAll('[data-howto]').forEach(b=>b.onclick=openHowto);
   const rs=document.getElementById('restart'); if(rs) rs.onclick=()=>{S=null; document.getElementById('sheet').innerHTML=''; render();};
   app.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>toggleSave(+b.dataset.save));
   const pl=document.getElementById('play'); if(pl) pl.onclick=playScript;

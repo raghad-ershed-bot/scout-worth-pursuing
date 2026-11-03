@@ -2,7 +2,7 @@
 
 A mobile-first, clickable prototype for Property Finder's Scout. For each home a searcher saves, it says whether it deserves their next step, what to ask first, and who said what. It runs on **30 real Property Finder listings in Bloom Towers, JVC**, checked on 3 Nov 2026, with a renter journey (Sara) and a buyer journey (Omar). Not a Property Finder product; agent messages and replies are simulated.
 
-- **Live prototype:** https://raghad-ershed-bot.github.io/scout-worth-pursuing/ (best on a phone)
+- **Live prototype:** https://raghad-ershed-bot.github.io/scout-worth-pursuing/ (best on a phone; tap **How to test** on the start screen for a 2-minute guided walkthrough)
 - **Start with:** [ONE-PAGER.md](ONE-PAGER.md)
 - **Supporting files:** [Google Drive](https://drive.google.com/drive/folders/1pHH4C9YdmlPQPbrNXoMPkbB_g3OvEQED)
 

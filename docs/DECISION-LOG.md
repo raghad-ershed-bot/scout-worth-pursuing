@@ -53,4 +53,6 @@ I reviewed the prototype end to end the way a PF leadership room would, and benc
 
 Two final touches: replies now read back as short structured fields (for example "Vacant: yes · per agency of #21", or "Tenanted until: August 2027 · month only"), and a "See what an agent receives" preview sits under the approve button. Search cards now show original building illustrations instead of empty photo boxes, labelled as illustrations; real listing photos stay on PF and are never copied.
 
+I also added a guided test (the start screen and the "?" in the header) so someone who hasn't read the brief knows what to try and what to look for.
+
 No rule, data or outcome changed. Every test suite was re-run, including a new `tests/presentation-v2.js`.
