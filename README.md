@@ -5,6 +5,7 @@ A mobile-first, clickable prototype for Property Finder's Scout. For each home a
 - **Live prototype:** https://raghad-ershed-bot.github.io/scout-worth-pursuing/ (best on a phone; tap **How to test** on the start screen for a 2-minute guided walkthrough)
 - **Start with:** [ONE-PAGER.md](ONE-PAGER.md)
 - **Supporting files:** [Google Drive](https://drive.google.com/drive/folders/1pHH4C9YdmlPQPbrNXoMPkbB_g3OvEQED)
+- **Strategy and review chat (ChatGPT):** https://chatgpt.com/share/6aea099c-3e28-83eb-9635-bd9916cf61b0
 
 **How I worked:**
 - I led the work: I chose the building, checked the listings, formed the findings, defined the problem and made the product decisions.
