@@ -9,5 +9,5 @@ await p.click('#p-L12 [data-ask]');await p.click('#sendSelf');await p.click('[da
 console.log('#12 after no reply:  ',await av('L12'));
 await p.click('#p-L15 [data-ask]');await p.click('#sendSelf');await p.click('[data-reply="L15"]');await p.click('.tab[data-tab="saved"]');
 console.log('#15 after reply:     ',await av('L15'));
-await p.evaluate(()=>{S.answers['L15'].available='No longer available (agent says).';render();});
-console.log('#15 with an injected "unavailable" answer (known limitation):',await av('L15'));await b.close();})();
+await p.evaluate(()=>{const A=S.answers['L15'];delete A.available;A.unavailable=true;render();});
+console.log('#15 after the agent says it is gone:',await av('L15'));await b.close();})();

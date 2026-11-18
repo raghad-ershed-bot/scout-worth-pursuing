@@ -323,7 +323,8 @@ function assess(pid){
     }
   }
   // Availability is always separate
-  rows.push(row('Available now', A.available?'Fits':'Unknown', A.available || 'Listings never confirm current availability. Only the agent can.', A.available?A.src:'Unknown'));
+  if(A.unavailable) rows.push(row('Available now','Conflict','The agent says it\'s no longer available. The listing stays visible, with the agent\'s answer beside it.', A.src));
+  else rows.push(row('Available now', A.available?'Fits':'Unknown', A.available || 'Listings never confirm current availability. Only the agent can.', A.available?A.src:'Unknown'));
   // Next step
   let step;
   const conflicts=rows.filter(r=>r.out==='Conflict');
@@ -579,7 +580,8 @@ function extracted(pid){ const A=S.answers[pid]||{}, o=[];
   if(A.priceAnswers){ const ps=[...A.priceAnswers.matchAll(/AED ([\d,]+) \((?:agency of )?#(\d+)\)/g)].map(x=>`AED ${x[1]} (#${x[2]})`);
     const one=A.priceAnswers.match(/agency of #(\d+) says (AED [\d,]+)\. #(\d+)/);
     o.push(one?`Price: ${one[2]} per #${one[1]} · #${one[3]} not asked`:`Price: ${ps.join(' vs ')} · still differ`); }
-  if(A.available) o.push(`Available: yes · per ${who(A.available)}`);
+  if(A.unavailable) o.push('Available: no · agent says it\'s gone');
+  else if(A.available) o.push(`Available: yes · per ${who(A.available)}`);
   if(A.cheques) o.push(`Cheques accepted: ${A.chequesN??A.cheques}`);
   if(A.tenancyEnd){ o.push('Tenanted until: August 2027 · month only'); o.push('Exact end date and handover date: not given'); }
   else if(A.occupancy){ o.push(`Vacant: ${/vacant/i.test(A.occupancy)?'yes':'unclear'} · per ${who(A.occupancy)}`); const h=A.occupancy.match(/hand over before ([^.]+)\./); if(h) o.push(`Handover: before ${h[1]} · per ${who(A.occupancy)}`); }
